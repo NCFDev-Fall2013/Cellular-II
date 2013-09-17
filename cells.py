@@ -6,9 +6,11 @@ from operator import itemgetter, attrgetter
 import weakref
 
 def call(a, f):
+	"""Unknown function usage. Called within __init__"""
 	return f(a)
 	
 def random_color():
+	"""Returns tuple containing color index"""
 	randomcolor = random.randint(0,155),int(random.randint(0,155)/1.15),random.randint(0,155)
 	return randomcolor
 
@@ -50,7 +52,7 @@ class Cell:
 		self.TaskTable["FindingFood"]	= self.task_finding_food
 		self.TaskTable["GettingFood"]	= self.task_getting_food
 
-#	"Task" functions, i.e. the cell's activities during each tick, depending on its task.
+	#"Task" functions, i.e. the cell's activities during each tick, depending on its task.
 	def task_none(self):
 		"""What the cell does should it have no task."""
 		self.task = "FindingFood"
@@ -127,6 +129,7 @@ class Cell:
 		return (abs(self.vel) * self.mass) / (environment.Environment().resistance * self.radius)
 
 	def eat(self, f):
+		"""Updates energy and mass according to set emRatio value and removes food item."""
 		#for f in environment.Environment().food_at(self.pos, self.radius):
 		self.energy += f.energy/self.emRatio
 		self.mass += f.energy - (f.energy/self.emRatio)
@@ -134,13 +137,18 @@ class Cell:
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
 	def weight_management(self):
+		"""Updates radius and sight range according to mass and density"""
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
 
 	def calculate_variance(self):
+		"""Setting variance for child cell. Called when cell duplicates""" #Currently only color varaince 
 		newphenotype = []
+		##Below code needs to be rewritten##
+		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
 		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
 			    self.phenotype[5][2] + random.randint(-15,15))
+		
 		while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 or newcolor[0]<0 or newcolor[0]>255 or newcolor[1]<0 or newcolor[1]>255 or newcolor[2]<0 or newcolor[2]>255:
 			print newcolor,"sucks! Its average is either above 150 or one of its color values is impossible!"
 			newcolor = (self.phenotype[5][0]+random.randint(-15,15), int(self.phenotype[5][1]+random.randint(-15,15)/1.15), self.phenotype[5][2]+random.randint(-15,15))
@@ -151,25 +159,29 @@ class Cell:
 		return newphenotype
 
 	def life_and_death(self):
+		"""Checks if cell mass is great enough for division or low enough to cause death.""" 
+		"""Brings new cells into existance or removes cell if conditions are true."""
 		if self.mass >= self.div_mass and self.energy >= self.div_energy:
-			#stats of both babbyz
+			##Removed Jack-ese##			
+			#Statistics for child cells
 			newMass		= self.mass/self.emRatio
 			newEnergy	= (self.energy - 3.0)/self.emRatio
 
-			#make babby 1
+			#Create child 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype1	= self.calculate_variance()
 			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
-			#make babby 2
+			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype2	= self.calculate_variance()
 			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
-			#make two cells at slightly different positions
+			#Instantiates children at slightly different positions
 			environment.Environment().remove_cell(self)
+		#Kills cell
 		elif self.mass <= 0.1:
 			environment.Environment().kill_cell(self)
 			
@@ -181,6 +193,7 @@ class Cell:
 		self.life_and_death()
 
 class TestFunctions(unittest.TestCase):
+	"""Unit tests"""
 	def test_position(self):
 		"""Gives the cell a random position, and tests if the cell is
 		at that position."""
