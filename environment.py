@@ -1,4 +1,4 @@
-import cells, food, random, unittest, util, singleton, vector, threading
+import cells, food, random, unittest, singleton, vector, threading
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count):
