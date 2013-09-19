@@ -1,9 +1,7 @@
-import unittest, environment
-import random, math
+import unittest, environment, random, math, weakref
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
-import weakref
 
 def call(a, f):
 	"""Unknown function usage. Called within __init__"""
