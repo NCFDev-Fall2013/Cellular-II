@@ -7,7 +7,7 @@ food.py              :
 getinput.py          :
 inputbox.py          :
 main.py              : FINISHED
-single_cell_table.py :
+single_cell_table.py : FINISHED
 singleton.py         :
 test.py              :
 thread_test.py       :
