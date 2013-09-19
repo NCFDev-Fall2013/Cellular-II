@@ -1,3 +1,6 @@
+# prevent anyone from running environment.py directly
+if __name__ == "__main__": print 'no'; exit(-1)
+
 import cells, food, random, unittest, singleton, vector, threading
 
 class Environment(singleton.Singleton):
@@ -22,38 +25,54 @@ class Environment(singleton.Singleton):
 		self.food_set.add(food.Food(pos.x, pos.y))
 
 	def add_cells(self, cell_count):
+		''' Add cell_count number of cells of random colors at random locations to the world'''
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 			
 	def tick(self):
+		''' give each cell a turn and maybe add food to the world'''
+		# we need to lock the cell_list so that we can itterate through it
 		self.lock.acquire()
+
 		for cell in self.cell_list:
 			cell.one_tick()
+			
+		# There is reseed_prob chance that a food item is added to the word at a random place.
 		if random.randint(0,100)<=self.reseed_prob:
 			self.add_food(1)
 		self.turn += 1
+		
+		# maybe we can move this up before food is added?
 		self.lock.release()
 
 	def food_at(self, pos, r):
+		'''return list of food within distance r of position pos'''
 		return [food for food in self.food_set if pos.distance_to(food.pos) <= r]
 
 	def remove_food(self, food):
+		'''delete a food item'''
 		try:
 			self.food_set.remove(food)
+
+		# handle food having already been removed
 		except KeyError:
 			pass
 
 	def remove_cell(self,cell):
+		''' delete a cell'''
 		self.cell_list.remove(cell)
 		
 	def kill_cell(self,cell):
+		''' replaces a cell with food'''
 		self.cell_list.remove(cell)
 		self.add_food_at_location(cell.pos)
 
 	# print_table()
 	#	output a table of each cell state to a text file
+
 	def print_table(self,filename,comment=""):
 		"""Prints a table to a textfile with the provided name, with the provided comment above it."""
+		''' Data: Cell placement, velocity, acceleration destination, radius, energy, mass, task'''
 		table_file = open(filename,"a")
 		# Header
 		table_file.write("\n"+str(comment)+"\nCell_n\tx_pos\ty_pos\tx_vel\ty_vel\tx_acl\ty_acl\tx_dest\ty_dest\tradius\tenergy\tmass\ttask\n")
@@ -79,11 +98,15 @@ class Environment(singleton.Singleton):
 		table_file.close()
 
 class CreationTest(unittest.TestCase):
+	''' unit tests'''
 	def runTest(self):
-		environment = Environment() #environment already initialized in test.py
+		''' run unit tests'''
+		#environment already initialized in test.py
+		environment = Environment() 
 
 		# test that environment is a singleton
 		self.assertTrue(Environment() is environment)
+
 		# test that environment initializes properly
 		self.assertEquals(len(environment.cell_list), 10)
 		self.assertEquals(len(environment.food_set), 10)
@@ -124,10 +147,9 @@ class CreationTest(unittest.TestCase):
 		environment.add_cells(add_cells_count)
 		self.assertEqual(len(environment.cell_list)-add_cells_count,num_cells)
 		
-if __name__ == "__main__": print 'no'; exit(-1)
 
 def debug_print_table():
-	"""This probably shouldn't be at the end of the file, but nano doesn't have copy and paste."""
+	'''tests print_table by creating a world with set information and then print_tabling that world to make sure the info is accurate'''
 	tbl = "Debug_Cell_Table.txt"
 	Env = Environment(0,0)
 	Env.cell_list.append(Cell(0,0))
@@ -146,3 +168,6 @@ def debug_print_table():
 	for run in xrange(50):
 		Env.tick()
 	Env.print_table(tbl)
+
+
+
