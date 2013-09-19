@@ -1,8 +1,4 @@
-import environment
-import food
-import test
-import cells
-import copy
+import environment, food, test, cells, copy
 from time import time
 
 def main():
