@@ -1,7 +1,6 @@
-import pygame, sys, threading, environment
+import pygame, sys, threading, environment, random
 from pygame.locals import *
 import pygame.gfxdraw
-import random
 
 #set color constants
 redColor = pygame.Color(255,0,0)
