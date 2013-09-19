@@ -2,6 +2,13 @@ import pygame, sys, threading, environment, random
 from pygame.locals import *
 import pygame.gfxdraw
 
+# Create a position class so we can add food via a mouse click
+# i guess i should import vector or something, but I did this instead
+class Position():
+	def __init__(self, loc_tuple):
+		self.x = loc_tuple[0]
+		self.y = loc_tuple[1]
+
 #set color constants
 redColor = pygame.Color(255,0,0)
 greenColor = pygame.Color(0,255,0)
@@ -28,11 +35,15 @@ windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 #window title
 pygame.display.set_caption('Nautical Cell Force 2')
 
-# change our system of coordinates into coordinates that pygame can understand
+
 def convert_to_display_loc(pos):
+	'''change our system of coordinates into coordinates that pygame can understand'''
 	# pos contains a tuple of ( 0.0x, 0.0y)
 	return int(pos.x*display_width), int(pos.y*display_height)
 
+def convert_envi_loc(display_loc):
+	''' change pygame coordiantes to the format used by the rest of our program'''
+	return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
 
 class Display(Thread):
 	def __init__(self,environment):
@@ -98,6 +109,11 @@ class Display(Thread):
 				if event.type ==QUIT:
 					pygame.quit()
 					return ()
+				# add food via mouse click
+				elif event.type == MOUSEBUTTONDOWN:
+					if event.button == 1:
+						pos = Position(convert_envi_loc(event.pos))
+						environment.Environment().add_food_at_location(pos)
 				
 				# allow user to change resistance
 				# increase resistance if the user hits the U
