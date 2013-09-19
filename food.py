@@ -1,5 +1,4 @@
-import vector
-import unittest
+import vector, unittest
 TestCase = unittest.TestCase
 from cells import Cell
 
