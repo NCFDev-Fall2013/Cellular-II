@@ -1,25 +1,33 @@
 from math import sqrt
+from math import fabs
+from math import fmod
+#assert(environment.Environment().width == 1 and environment.Environment().height == 1, #"vector.py assumes world is 1x1")
 
-#assert(environment.Environment().width == 1 and environment.Environment().height == 1, "vector.py assumes world is 1x1")
+	
+def distance(x1, y1, x2, y2): 
+	xdiff = fabs(x1 - x2)
+	ydiff = fabs(y1 - y2)
+	if(xdiff < (1.0 - xdiff)):
+                xdiff = xdiff
+        else:
+		xdiff= (1.0 - xdiff)	
+	if( ydiff < (1.0 - ydiff)):
+                ydiff = ydiff
+        else:
+		ydiff = (1.0 - ydiff)
+	return sqrt(xdiff*xdiff + ydiff*ydiff)
+	
+"""
+def distance(x1, y1, x2, y2):
+        xdiff = abs(x1 - x2)
+        ydiff = abs(y1 - y2)
+        return sqrt(xdiff*xdiff + ydiff*ydiff)
+"""
 
-from cffi import FFI
-ffi = FFI()
-ffi.cdef("double distance(double x1, double y1, double x2, double y2); double diff(double a, double b);")
-dist = ffi.verify("""
-	#include <math.h>
+def diff(a, b): 
+	return fmod(a - b + 1.5, 1.0) - 0.5 # < -0.5 and > 0.5 wrap around using fmod
 	
-	double distance(double x1, double y1, double x2, double y2) {
-		double xdiff = fabs(x1 - x2);
-		double ydiff = fabs(y1 - y2);
-		xdiff = xdiff < (1.0 - xdiff) ? xdiff : (1.0 - xdiff);
-		ydiff = ydiff < (1.0 - ydiff) ? ydiff : (1.0 - ydiff);
-		return sqrt(xdiff*xdiff + ydiff*ydiff);
-	}
-	
-	double diff(double a, double b) {
-		return fmod(a - b + 1.5, 1.0) - 0.5; // < -0.5 and > 0.5 wrap around using fmod
-	}
-	""", libraries=[])
+
 
 class Vector(object):
 	__slots__ = ('x', 'y')
@@ -86,10 +94,10 @@ class Point(Vector):
 			#ydiff = ydiff + 1
 		#xdiff = ((self.x - other.x + 0.5) % 1) - 0.5
 		#ydiff = ((self.y - other.y + 0.5) % 1) - 0.5
-		return Vector(dist.diff(self.x, other.x), dist.diff(self.y, other.y))
+		return Vector(diff(self.x, other.x), diff(self.y, other.y))
 	def distance_to(self, other):
 		#Has no meaning for vectors	
-		return dist.distance(self.x, self.y, other.x, other.y)
+		return distance(self.x, self.y, other.x, other.y)
 		
 		#return dist(self.x, self.y, other.x, other.y)
 		#return sqrt(xdiff*xdiff + ydiff*ydiff)
