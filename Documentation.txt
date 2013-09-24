@@ -1,13 +1,11 @@
 Cells.py             : FINISHED (One function needs inspection)
 Display.py           : FINISHED 
 Environment.py       : FINISHED
-eztext.py            :
 food.py              : FINISHED
-getinput.py          :
-inputbox.py          :
+inputbox.py          : 
 main.py              : FINISHED
 single_cell_table.py : FINISHED
 singleton.py         : FINISHED
-test.py              :
-thread_test.py       :
-vector.py            :
+test.py              : 
+thread_test.py       : 
+vector.py            : 
