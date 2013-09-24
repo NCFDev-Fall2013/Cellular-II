@@ -7,7 +7,7 @@ getinput.py          :
 inputbox.py          :
 main.py              : FINISHED
 single_cell_table.py : FINISHED
-singleton.py         :
+singleton.py         : FINISHED
 test.py              :
 thread_test.py       :
 vector.py            :
