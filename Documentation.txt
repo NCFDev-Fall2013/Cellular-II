@@ -1,9 +1,8 @@
-Benchmark.py         :
 Cells.py             : FINISHED (One function needs inspection)
 Display.py           : FINISHED 
-Environment.py       :
+Environment.py       : FINISHED
 eztext.py            :
-food.py              :
+food.py              : FINISHED
 getinput.py          :
 inputbox.py          :
 main.py              : FINISHED
