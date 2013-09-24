@@ -68,8 +68,8 @@ class Point(Vector):
 		"""Check vector."""
 #		self.x %= 1
 #		self.y %= 1
-		self.x %= environment.environment.width
-		self.y %= environment.environment.height
+		self.x %= environment.Environment().width
+		self.y %= environment.Environment().height
 	def __init__(self, x, y):
 		"""Instantiates the two values for the vector."""
 		super(Point, self).__init__(x, y)
