@@ -20,7 +20,7 @@ def distance(x1, y1, x2, y2):
 	return sqrt(xdiff*xdiff + ydiff*ydiff)
 
 def diff(a, b):
-	"""???"""
+	"""Helps vectors calculate the difference."""
 	return fmod(a - b + 1.5, 1.0) - 0.5 # < -0.5 and > 0.5 wrap around using fmod
 
 class Vector(object):
