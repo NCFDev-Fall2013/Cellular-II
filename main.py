@@ -6,7 +6,6 @@
 #=====Import List=====#
 import environment
 import food
-import test
 import cells
 import copy
 import sys
