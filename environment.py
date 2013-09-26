@@ -29,6 +29,10 @@ class Environment(singleton.Singleton):
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 			
+	def add_cell_at_location(self, pos):
+		"""Add a cell at location"""
+		self.cell_list.append(cells.Cell(pos.x, pos.y))
+			
 	def tick(self):
 		''' give each cell a turn and maybe add food to the world'''
 		# we need to lock the cell_list so that we can itterate through it

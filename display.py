@@ -109,11 +109,14 @@ class Display(Thread):
 				if event.type ==QUIT:
 					pygame.quit()
 					return ()
-				# add food via mouse click
+				# add food or cell via left/right mouse click
 				elif event.type == MOUSEBUTTONDOWN:
 					if event.button == 1:
 						pos = Position(convert_envi_loc(event.pos))
 						environment.Environment().add_food_at_location(pos)
+					elif event.button == 3:
+						pos = Position(convert_envi_loc(event.pos))
+						environment.Environment().add_cell_at_location(pos)
 				
 				# allow user to change resistance
 				# increase resistance if the user hits the U
