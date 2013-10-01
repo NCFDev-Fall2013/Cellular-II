@@ -1,11 +1,17 @@
-import food, cells, unittest
+import food, cells, random
+import unittest
 class TestFood(unittest.TestCase):
 	def setUp(self):
-		self.foodObj = food.Food(1,5)
+		self.x=1.3
+		self.y=5.7
+		self.foodObj = food.Food(self.x,self.y)
 		
-	def foodStats(self):
-		self.assertEquals(self.foodObj.energy, 0.5)
-		self.assertEquals(self.foodObj.x, 1)
-		self.assertEquals(self.foodObj.y, 5)
+	def test_foodStats(self):
+		self.assertEqual(self.foodObj.energy, 0.5)
+		self.assertTrue(self.foodObj.pos.x, self.x%1)
+		self.assertTrue(self.foodObj.pos.y, self.y%1)
 
-unittest.main()
+
+
+if __name__ == '__main__':
+    unittest.main()
