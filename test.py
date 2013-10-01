@@ -1,15 +1,12 @@
-import unittest, food, environment, cells
-
-#Tests for Environment
-EnvironmentCreationTest = environment.CreationTest
-
-#Tests for Cells
-CellsCreationTest = cells.TestFunctions
-
-#Tests for Food
-FoodTest = food.CreationTest
-
-if __name__ == "__main__":
-	environment.Environment(10, 10)
-	#environment.Environment(10, 10) #this should fail
-	unittest.main()
+import food, cells, unittest
+class TestFood(unittest.TestCase):
+	def setUp(self):
+		self.foodObj = Food(1,5)
+		
+	def foodStats(self):
+		self.assertEquals(self.foodObj.energy, 0.5)
+		self.assertEquals(self.foodObj.x, 1)
+		self.assertEquals(self.foodObj.y, 5)
+		
+if __name__ == '__main__':
+    unittest.main()
