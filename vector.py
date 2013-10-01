@@ -66,10 +66,10 @@ class Vector(object):
 class Point(Vector):
 	def fit_to_torus(self):
 		"""Check vector."""
-#		self.x %= 1
-#		self.y %= 1
-		self.x %= environment.Environment().width
-		self.y %= environment.Environment().height
+		self.x %= 1
+		self.y %= 1
+#		self.x %= environment.Environment().width
+#		self.y %= environment.Environment().height
 	def __init__(self, x, y):
 		"""Instantiates the two values for the vector."""
 		super(Point, self).__init__(x, y)
