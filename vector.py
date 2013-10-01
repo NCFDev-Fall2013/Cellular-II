@@ -21,7 +21,7 @@ def distance(x1, y1, x2, y2):
 
 def diff(a, b):
 	"""Helps vectors calculate the difference."""
-	return fmod(a - b + 1.5, 1.0) - 0.5 # < -0.5 and > 0.5 wrap around using fmod
+	return fmod(a - b + 1.5, 1.0) - 0.5 # < -0.5 and > 0.5 wrap around using fmod 
 
 class Vector(object):
 	__slots__ = ('x', 'y')
@@ -111,3 +111,5 @@ class VectorAroundZero(object):
 	def y(self   ): return self._y
 	@y.setter
 	def y(self, y): self._y = ((y + 0.5) % 1) - 0.5
+
+
