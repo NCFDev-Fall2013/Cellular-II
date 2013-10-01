@@ -1,7 +1,7 @@
 from math import sqrt
 from math import fabs
 from math import fmod
-import environment
+#import environment
 #assert(environment.Environment().width == 1 and environment.Environment().height == 1, #"vector.py assumes world is 1x1")
 
 	
