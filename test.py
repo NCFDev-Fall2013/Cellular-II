@@ -17,10 +17,7 @@ class TestFood(unittest.TestCase):
 
 class TestCells(unittest.TestCase):
 	def setUp(self):
-		self.x = .54
-		self.y = .45
-		self.environmentObj = environment.Environment(9,9)
-		self.environmentObj.add_cell_at_location(vector.Point(self.x,self.y))
+		self.environmentObj = environment.Environment(10,10)
 		self.cellList = self.environmentObj.cell_list
 		
 	def test_init(self):
@@ -89,11 +86,14 @@ class TestCells(unittest.TestCase):
                 self.assertEqual(Alph.task , "FindingFood")
 		
 	def test_life_and_death(self):
+	#uncomment print statements to see live output
 		babies = 0
 		corpses = 0
-		for cell in self.cellList:
+		duplicate = list(self.cellList)
+		for cell in duplicate:
 			cell.div_mass = .3
 			cell.div_energy = .3
+			cell.emRation = 2
 			cell.mass = round(random.uniform(.0,.5),2)
 			cell.energy = round(random.uniform(.0,.5),2)
 			orig = len(self.cellList)
@@ -102,20 +102,16 @@ class TestCells(unittest.TestCase):
 				self.assertEqual(len(self.cellList),(orig+1))
 				corpses+=1
 				babies+=2
-				print "Asexual is best sexual"
+				#print "A cell of mass",cell.mass,"has been sacrificed to the fertility gods.\n"
 			elif cell.mass <= 0.1:
 				self.assertEqual(len(self.cellList),(orig-1))
 				corpses+=1
-				print cell,"has died."
+				#print "A cell of mass",cell.mass,"has died of starvation.\n"
 			else:
 				self.assertEqual(len(self.cellList),(orig))
-				print "nothing happened."
-		print "\n",babies,"babies were made."
-		print "and",corpses,"cells died."
-		print len(self.cellList),"cells remain."
-		if babies == 0:
-			print "\nno babies were made to test, generating again..."
-			self.test_life_and_death()
+				#print "A cell of mass",cell.mass,"has lived to fight another day.\n"
+		#print "\n",babies,"new cells were made and",corpses,"cells died."
+		#print len(self.cellList),"cells remain."
 	
 if __name__ == '__main__':
     unittest.main()
