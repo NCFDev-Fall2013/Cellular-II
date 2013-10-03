@@ -19,7 +19,6 @@ class TestVector(unittest.TestCase):
                 y2 = 1
                 self.nullVector = vector.Vector(x1,y1)
                 self.unitVector = vector.Vector(x2,y2)
-                        
 
 	def test_distance(self):
 		# test if distance(testpoints= known distance
