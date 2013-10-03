@@ -189,32 +189,3 @@ class Cell:
 		self.update_coords()
 		self.weight_management()
 		self.life_and_death()
-
-class TestFunctions(unittest.TestCase):
-	"""Unit tests"""
-	def test_position(self):
-		"""Gives the cell a random position, and tests if the cell is
-		at that position."""
-		rand_pos = random.random(), random.random()
-		c = Cell(rand_pos[0], rand_pos[1])
-		self.assertEquals(c.pos.x, rand_pos[0])
-		self.assertEquals(c.pos.y, rand_pos[1])
-
-	def test_distance_func(self):
-		"""Tests the accuracy distance function."""
-		self.assertEquals(.05, util.distance(.00, .03, .00,.04))
-		self.assertEquals(.05, util.distance(.03, .00, .04,.00))
-		self.assertEquals(.05, util.distance(.06, .09, .08,.04))
-		self.assertEquals(.05, util.distance(-.03,-.06,-.04,-.08))
-		e = environment.Environment()
-		self.assertAlmostEquals(.00, util.distance(.00, e.width, e.height, 0.0))
-		self.assertAlmostEquals(.05, util.distance(.02, e.width-.01, .03, e.height-.01))
-
-	def test_Vector_multiplication(self):
-		self.v1 = Vector(1,5)
-		self.v2 = self.v1*5
-		self.v3 = self.v1*.5
-		self.assertEquals(5,self.v2.x)
-		self.assertEquals(25,self.v2.y)
-		self.assertEquals(.5,self.v3.x)
-		self.assertEquals(2.5,self.v3.y)
