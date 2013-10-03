@@ -19,7 +19,8 @@ class TestVector(unittest.TestCase):
                 y2 = 1
                 self.nullVector = vector.Vector(x1,y1)
                 self.unitVector = vector.Vector(x2,y2)
-
+                self.v = vector.Vector(.2,.1)
+                
 	def test_distance(self):
 		# test if distance(testpoints= known distance
 		self.assertEqual(round(distance(0,0,.9,.9),3),1.273)
@@ -39,23 +40,86 @@ class TestVector(unittest.TestCase):
 		self.assertEqual(diff(.9,.25),.65)
 
 	def test__init__(self):
-		v = Vector(0,1)
-		self.assertEqual(v.y,1)
-		self.assertEqual(v.x,0)
+		newV = Vector(0,1)
+		newP = Point(Vector)
+		self.assertEqual(newV.y,1)
+		self.assertEqual(newV.x,0)
 
 	def test__iadd__(self):
-		v = Vector(.2,.1)
+                
+		vTemp = v #storing the default in temporary variable vTemp
 		v2 = Vector(.3,.2)
-		self.assertEqual((v.__iadd__(v2).x,.5))
-		self.assertEqual((v.__iadd__(v2).y,.3))
-
+		v += v2
+		self.assertEqual((v.x,.5))
+		self.assertEqual((v.y,.3))
+        
+                v = vTemp #resetting v to default value, stored in vTemp
 		v3 = Vector(0,0)
-		self.assertEqual((v.__iadd__(v3).x,.2))
-		self.assertEqual((v.__iadd__(v3).x,.1))
+		v += v3
+		self.assertEqual((v.x,.2))
+		self.assertEqual((v.x,.1))
+
+                v = vTemp #resetting for further testing 
 
         def test_add(self):
-            #pretty much the same as iadd
+                self.addResult = unitVector + nullVector
+                if not(addResult == unitVector):
+                        fail()
+                addResult = v + nullVector
+                if not(addResult == v):#{}{}{}{}{}{}{}{}{}{}}{}
+                        fail()
 
         def test_sub(self):
-            self.subTester = (unitVector - nullVector)
-            self.assertEqual((unitVector - nullVector), s
+                self.subResult = unitVector - nullVector
+                if not(addResult == unitVector):
+                        fail()
+                subResult = v - nullVector
+                if not(subResult == v):#{}{}{}{}{}{}{}{}{}{}}{}
+                        fail()
+
+        def test_mul(self):
+                self.mulResult = unitVector * nullVector
+                if not(mulResult == nullVector):
+                        fail()
+                mulResult = v * unitVector
+                if not(mulResult == v):
+                        fail()
+
+        def test_div(self):
+                self.divResult = v/unitVector
+                if not(divResult == v):
+                        fail()
+                divResult = nullVector/v
+                if not(divResult == nullVector):
+                       fail()
+
+        def test_neg(self):
+                self.negVector = -v
+                assertEqual(negVector.x, -v.x)
+                assertEqual(negVector.y, -v.y)
+                negVector = -unitVector
+                assertEqual(negVector.x, -1)
+                assertEqual(negVector.y, -1)
+
+        def test_abs(self):
+                assertEqual(abs(unitVector), math.sqrt(2))
+                assertEqual(abs(nullVector), 0)
+                assertEqual(round(abs(v),3), 0.224) 
+
+        def test_repr(self):
+                vectName = str(unitVector)
+                assertEqual(vectName, '{1,1)')
+                vectName = str(nullVector)
+                assertEqual(vectName, '(0,0)')
+                vectName = str(v)
+                assertEqual(vectName, '(.2,.1)')
+
+        def test_eq(self):
+                testVector = vector.Vector(1,1)
+                assertEqual(testVector == unitVector, True)
+                testVector = vector.Vector(0,0)
+                assertEqual(testVector == nullVector, True)
+                
+        
+                
+                
