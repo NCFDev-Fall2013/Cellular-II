@@ -76,7 +76,7 @@ class TestVector(unittest.TestCase):
 		# test if diff(testpoints= known distance
 		self.assertEqual(diff(0,0),0) 
 		self.assertEqual(diff(1,1),0)
-		self.assertEqual(diff(.5,.3).2)
+		self.assertEqual(diff(.5,.3),.2)
 		self.assertEqual(diff(.9,.25),.65)
 
 	def test__init__(self):
