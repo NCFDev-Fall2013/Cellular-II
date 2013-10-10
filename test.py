@@ -24,19 +24,21 @@ class TestEnvironment(unittest.TestCase):
 		self.assertEquals(global_e.reseed_prob,10)
 		self.assertEquals(global_e.resistance, 600)
 		self.assertEquals(len(global_e.food_set), 10)
+		print "init_once is a go"
 
 	def test_add_food(self):
 		fc=len(global_e.food_set)
 		global_e.add_food(10)
 		self.assertEquals(len(global_e.food_set), fc+10)
-		print "Add food is a go"
+		print "add_food is a go"
 
 #Not yet finished
 	def test_add_food_at_location(self):
 		global_e.cell_list=[]
 		test_cell=cells.Cell(0.1,0.2)
 		global_e.cell_list.append(cells.Cell(0.1, 0.2))
-		self.assertEquals(vectorglobal_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
+		self.assertEquals(global_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
+		print "add_food_at_location is a go"
 	
 	
 #Tests for Cells
@@ -46,6 +48,7 @@ class TestEnvironment(unittest.TestCase):
 #FoodTest = food.CreationTest
 
 #Vector Test
+
 class TestVector(unittest.TestCase):
 	def setup(self):
 		global_e.init_once(10,10)
@@ -213,12 +216,8 @@ if __name__ == "__main__":
 ##                if not (self.x>=0 and self.x<1):
 ##                        fail()
 ##                if not (self.y>=0 and self.y<1):
-##                        fail()
-        
+##                        fail()      
                 
 if __name__ == '__main__':
-        #environment.Environment(10, 10)
-        environment3 = environment.Environment(10,10)
         unittest.main()
->>>>>>> d1cca98ce52c9d79ec22dc188f36a70b0845905c
 
