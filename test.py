@@ -32,13 +32,12 @@ class TestEnvironment(unittest.TestCase):
 		print "Add food is a go"
 
 #Not yet finished
-"""
 	def test_add_food_at_location(self):
 		global_e.cell_list=[]
 		test_cell=cells.Cell(0.1,0.2)
 		global_e.cell_list.append(cells.Cell(0.1, 0.2))
-		self.assertTrue(global_e.cell_list[0].pos == Point(0.1,0.2))
-"""		
+		self.assertEquals(vectorglobal_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
+	
 	
 #Tests for Cells
 #CellsCreationTest = cells.TestFunctions
@@ -50,7 +49,8 @@ class TestEnvironment(unittest.TestCase):
 class TestVector(unittest.TestCase):
 	def setup(self):
 		import environment
-		environment = environment.Environment(10,10)
+		
+		environment = global_e
 		max_width = environment.width 
 		max_height = environment.height
 		# set x and y pairs
@@ -68,8 +68,7 @@ class TestVector(unittest.TestCase):
 		
 	def test_diff(self):
 		# test if diff(testpoints= known distance
-		self.assertEqual(diff(0,0),0)
-		dif(0,0) ==0 ? 
+		self.assertEqual(diff(0,0),0) 
 		self.assertEqual(diff(1,1),0)
 		self.assertEqual(diff(.5,.3).2)
 		self.assertEqual(diff(.9,.25),.65)
