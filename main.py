@@ -72,7 +72,6 @@ def main():
 
 		(worldClock.tick(sim_speed) + 0.00000000001)
 		World.tick()
-		World.print_table("Main_Test.txt","Tick: "+str(i))
 #						###MAIN LOOP END###
 
 # 	Closes the graphics thread if the main loop is broken
