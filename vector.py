@@ -9,14 +9,15 @@ def distance(x1, y1, x2, y2):
         """Calculates and returns the distance""" 
         xdiff = fabs(x1 - x2)
         ydiff = fabs(y1 - y2)
-        if(xdiff < (1.0 - xdiff)):
-                xdiff = xdiff
-        else:
-                xdiff= (1.0 - xdiff)    
-        if( ydiff < (1.0 - ydiff)):
-                ydiff = ydiff
-        else:
-                ydiff = (1.0 - ydiff)
+        #these statements below seem to be an issue- I'm not sure why they exist
+##        if(xdiff < (1.0 - xdiff)):
+##                xdiff = xdiff
+##        else:
+##                xdiff= (1.0 - xdiff)    
+##        if( ydiff < (1.0 - ydiff)):
+##                ydiff = ydiff
+##        else:
+##                ydiff = (1.0 - ydiff)
         return sqrt(xdiff*xdiff + ydiff*ydiff)
 
 def diff(a, b):
