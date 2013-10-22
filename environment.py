@@ -4,7 +4,7 @@ if __name__ == "__main__": print 'no'; exit(-1)
 import cells, food, random, unittest, singleton, vector, threading
 
 class Environment(singleton.Singleton):
-	def init_once(self, food_count, cells_count):
+	def init_once(self, food_count, cells_count, add_food_rate, usr_resist):
 		"""Generate a 1x1 environment with specified amount of food and cells"""
 		self.cell_list = []
 		self.food_set = set()
@@ -13,8 +13,8 @@ class Environment(singleton.Singleton):
 		self.add_food(food_count)
 		self.add_cells(cells_count)
 		self.turn = 0
-		self.reseed_prob = 10
-		self.resistance = 600
+		self.reseed_prob = add_food_rate
+		self.resistance = usr_resist
 
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
