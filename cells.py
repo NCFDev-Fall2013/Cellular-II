@@ -19,8 +19,6 @@ class Cell:
 		self.pos = Point(float(x), float(y))
 		self.vel = Vector(x_vel, y_vel)
 		self.acl = Vector(0.0, 0.0)
-		self.x = x
-		self.y = y
 
 		# Phenotypes:
 		self.phenotype			= Phenotype		# Stored for calc_variance's sake
@@ -39,8 +37,6 @@ class Cell:
 		self.energy		 = energy
 		self.mass		 = mass
 		self.exerted_force	 = Vector(0.0, 0.0)
-		self.repulsion_force = Vector(0.0, 0.0)
-		self.force_vector_sum = Vector(0.0, 0.0)
 		self.weight_management()
 
 		# Required for logic:
@@ -114,7 +110,6 @@ class Cell:
 		#self.energy -= self.exerted_force*displacement
 		#self.energy -= self.exerted_force*prev_vel
 		self.acl = self.exerted_force - self.vel*abs(self.vel)*environment.Environment().resistance*(self.radius)/self.mass
-		print "Exerted force: " + str(self.exerted_force)
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
@@ -158,14 +153,6 @@ class Cell:
 		newphenotype.append(newcolor)
 		for t in self.phenotype[6:]:	newphenotype.append(t)
 		return newphenotype
-		
-	def collision_detection(self, cell_list_initial, x, y, radius):
-		cell_list_clone = cell_list_initial[:]
-		for cell_A in cell_list_initial:
-			cell_list_clone.remove(cell_A)
-			for cell_B in cell_list_clone:
-				if  math.sqrt((cell_B.x - cell_A.x)**2 + (cell_B.y - cell_A.y)**2) <= (cell_B.radius + cell_A.radius):
-					print "OMG WE'RE TOUCHING OMG"
 
 	def life_and_death(self):
 		"""Checks if cell mass is great enough for division or low enough to cause death.""" 
