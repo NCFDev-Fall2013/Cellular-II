@@ -2,6 +2,8 @@ import pygame, sys, threading, environment, random
 from pygame.locals import *
 import pygame.gfxdraw
 
+global_sendingBool = True
+
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
 class Position():
@@ -81,7 +83,13 @@ class Display(Thread):
 #				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
 #				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
 				
-				
+
+        def isStopped(self):
+                for event in pygame.event.get():
+                        if event.type == KEYDOWN:
+                                if event.key == K_p: global_sendingBool = False
+                                elif event.key == K_r: global_sendingBool = True
+                                        
 	def run(self):
 		while True:
 			# make the background white
@@ -131,8 +139,7 @@ class Display(Thread):
 						if new_resistance >=0:
 							environment.Environment().resistance = new_resistance
 						else:
-							pass
-
+				
 			# update the screen
 			pygame.display.update()
 
