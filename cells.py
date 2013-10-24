@@ -13,7 +13,7 @@ def random_color():
 	return randomcolor
 
 class Cell:
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.001, 0.5,0.6, 0.005, None, 0.0]):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.5, 0.6, None 0.001, 0.005, 0.0]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -23,14 +23,14 @@ class Cell:
 		# Phenotypes:
 		self.phenotype			= Phenotype		# Stored for calc_variance's sake
 		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
-		self.walk_force			= Phenotype[1]
-		self.div_energy			= Phenotype[2]		# How much energy a cell needs to divide
-		self.div_mass			= Phenotype[3]		# How much mass a cell needs to divide
-		self.density			= Phenotype[4]
-		if Phenotype[5] == None:
+		self.div_energy			= Phenotype[1]		# How much energy a cell needs to divide
+		self.div_mass			= Phenotype[2]		# How much mass a cell needs to divide
+		if Phenotype[3] == None:
 			self.color = random_color()
-			Phenotype[5] = self.color
-		else:	self.color		= Phenotype[5]
+			Phenotype[3] = self.color
+		else:	self.color		= Phenotype[3]
+		self.walk_force			= Phenotype[4]
+		self.density			= Phenotype[5]
 		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
 		
 		# Required for motion:
@@ -144,14 +144,37 @@ class Cell:
 		newphenotype = []
 		##Below code needs to be rewritten##
 		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
-		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
-			    self.phenotype[5][2] + random.randint(-15,15))
 		
+		#This is all the color stuff
+		
+		newcolor = (self.phenotype[3][0] + random.randint(-15,15),self.phenotype[3][1] + random.randint(-15,15), +\
+			    self.phenotype[3][2] + random.randint(-15,15))
 		while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 or newcolor[0]<0 or newcolor[0]>255 or newcolor[1]<0 or newcolor[1]>255 or newcolor[2]<0 or newcolor[2]>255:
-			newcolor = (self.phenotype[5][0]+random.randint(-15,15), int(self.phenotype[5][1]+random.randint(-15,15)/1.15), self.phenotype[5][2]+random.randint(-15,15))
-		for t in self.phenotype[:5]:	newphenotype.append(t)
+			newcolor = (self.phenotype[3][0]+random.randint(-15,15), int(self.phenotype[3][1]+random.randint(-15,15)/1.15), self.phenotype[3][2]+random.randint(-15,15))
+		
+		#This is for the variation
+		
+		for t in self.phenotype[:3]:	
+		    randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
+		    if t - randomvariation <= 0:   #If subtracting the value would cause the phenotype to be negative it just adds it
+		        t += randomvariation
+		    else:
+		        direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+		        randomvariation = randomvariation * direction      #Then multiplies it by the float
+		        t += randomvariation                                              #And adds that value
+		    newphenotype.append(t)
+		
 		newphenotype.append(newcolor)
-		for t in self.phenotype[6:]:	newphenotype.append(t)
+		
+		for t in self.phenotype[3:]:
+		    randomvariation = random.uniform(0,.005)      #This half does the same thing, but with a larger value
+		    if t - randomvariation <= 0:
+		        t += randomvariation
+		    else:
+		        direction =  random.randint(-1,1)
+		        randomvariaton = randomvariation * direction
+		        t += randomvariation
+		    newphenotype.append(t)
 		return newphenotype
 
 	def life_and_death(self):
