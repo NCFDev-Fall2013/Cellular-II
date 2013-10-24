@@ -187,5 +187,5 @@ class Cell:
 		self.update_coords()
 		self.weight_management()
 		self.life_and_death()
-		cell_col_list = environment.Environment().cell_list
-		self.collision_detection(cell_col_list, self.x, self.y, self.radius)
+		#cell_col_list = environment.Environment().cell_list
+		#self.collision_detection(cell_col_list, self.x, self.y, self.radius)
