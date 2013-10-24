@@ -166,7 +166,7 @@ class Cell:
 		
 		newphenotype.append(newcolor)
 		
-		for t in self.phenotype[3:]:
+		for t in self.phenotype[4:]:
 		    randomvariation = random.uniform(0,5)      #This half does the same thing, but with a larger value
 		    if t - randomvariation <= 0:
 		        t += randomvariation
