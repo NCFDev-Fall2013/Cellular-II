@@ -32,6 +32,14 @@ class Environment(singleton.Singleton):
 	def add_cell_at_location(self, pos):
 		"""Add a cell at location"""
 		self.cell_list.append(cells.Cell(pos.x, pos.y))
+
+        def collision_detection(self, cell_list_initial):
+                cell_list_clone = cell_list_initial[:]
+                for cell_A in cell_list_initial:
+                        cell_list_clone.remove(cell_A)
+                for cell_B in cell_list_clone:
+                       if  math.sqrt((cell_B.x - cell_A.x)**2 + (cell_B.y - cell_A.y)**2) <= (cell_B.radius + cell_A.radius):
+                               print "OMG WE'RE TOUCHING ZOMG"
 			
 	def tick(self):
 		''' give each cell a turn and maybe add food to the world'''
@@ -44,6 +52,10 @@ class Environment(singleton.Singleton):
 		# There is reseed_prob chance that a food item is added to the word at a random place.
 		if random.randint(0,100)<=self.reseed_prob:
 			self.add_food(1)
+                cell_col_list = environment.Environment().cell_list
+                self.collision_detection(cell_col_list)
+
+
 		self.turn += 1
 		
 		# maybe we can move this up before food is added?

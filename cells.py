@@ -179,7 +179,9 @@ class Cell:
 			environment.Environment().remove_cell(self)
 		#Kills cell
 		elif self.mass <= 0.1:
-			environment.Environment().kill_cell(self)
+
+                               
+
 			
 	def one_tick(self):
 		"""What a cell does every arbitrary unit of time."""
@@ -189,3 +191,4 @@ class Cell:
 		self.life_and_death()
 		#cell_col_list = environment.Environment().cell_list
 		#self.collision_detection(cell_col_list, self.x, self.y, self.radius)
+                
