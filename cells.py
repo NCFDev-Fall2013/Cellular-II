@@ -13,7 +13,7 @@ def random_color():
 	return randomcolor
 
 class Cell:
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.5, 0.6, None 0.001, 0.005, 0.0]):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.5, 0.6, None, 0.001, 0.005, 0.0]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
