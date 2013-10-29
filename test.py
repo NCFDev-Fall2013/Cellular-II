@@ -1,4 +1,3 @@
-
 import unittest, food, environment, cells, vector, random, math
 
 #Tests for Environment
@@ -36,15 +35,41 @@ class TestEnvironment(unittest.TestCase):
                 self.assertEquals(len(global_e.food_set), fc+10)
                 print "add_food is a go"
 
-#Not yet finished
         def test_add_food_at_location(self):
                 global_e.cell_list=[]
                 test_cell=cells.Cell(0.1,0.2)
                 global_e.cell_list.append(cells.Cell(0.1, 0.2))
                 self.assertEquals(global_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
                 print "add_food_at_location is a go"
-        
-        
+	
+        def test_add_cells(self):
+                global_e.cell_list=[]
+                global_e.add_cells(5)
+                self.assertEquals(len(global_e.cell_list),5)
+		print "add_cells is a go"
+                pass
+
+        def test_add_cells_at_location(self):
+                pass
+
+        def test_tick(self):
+                pass
+
+        def test_food_at(self):
+                pass
+
+        def test_remove_food(self):
+                pass
+
+        def test_remove_cell(self):
+                pass
+
+        def test_kill_cell(self): 
+                pass
+
+        def test_print_table(self):
+                pass
+
 #Tests for Cells
 #CellsCreationTest = cells.TestFunctions
 
@@ -54,6 +79,28 @@ class TestEnvironment(unittest.TestCase):
 #Vector Test
 
 class TestVector(unittest.TestCase):
+#Needs to be fixed
+	"""
+        def test__iadd__(self):
+                print "In the garden of eden",global_VecsunitVector
+		#Invalid variable global_Vescsv                
+		print "test_iadd which involves 0",global_Vecsv 
+                vTemp = global_Vecsv #storing the default in temporary variable vTemp
+                v2 = Vector(.3,.2)
+                global_Vecsv += v2
+                self.assertEqual((global_Vecsv.x,.5))
+                self.assertEqual((global_Vecsv.y,.3))
+                print "test_iadd which involves 1",global_Vecsv
+        
+                global_Vecsv = vTemp #resetting v to default value, stored in vTemp
+                v3 = Vector(0,0)
+                global_Vecsv += v3
+                self.assertEqual((global_Vecsv.x,.2))
+                self.assertEqual((global_Vecsv.x,.1))
+                global_Vecsv = vTemp
+                print "test_iadd which involves 2",global_Vecsv
+	"""
+
         def setUp(self):
                 global_e.init_once(10,10)
                 environment = global_e
@@ -96,25 +143,6 @@ class TestVector(unittest.TestCase):
                 self.assertEqual(newV.y,1)
                 self.assertEqual(newV.x,0)
 
-        def test__iadd__(self):
-                print "In the garden of eden",global_VecsunitVector
-		#Invalid variable global_Vescsv                
-		print "test_iadd which involves 0",global_Vecsv 
-                vTemp = global_Vecsv #storing the default in temporary variable vTemp
-                v2 = Vector(.3,.2)
-                global_Vecsv += v2
-                self.assertEqual((global_Vecsv.x,.5))
-                self.assertEqual((global_Vecsv.y,.3))
-                print "test_iadd which involves 1",global_Vecsv
-        
-                global_Vecsv = vTemp #resetting v to default value, stored in vTemp
-                v3 = Vector(0,0)
-                global_Vecsv += v3
-                self.assertEqual((global_Vecsv.x,.2))
-                self.assertEqual((global_Vecsv.x,.1))
-                global_Vecsv = vTemp
-                print "test_iadd which involves 2",global_Vecsv
-                
         def test_add(self):
                 print "test_add which involves",global_Vecsv
                 addResult = global_VecsunitVector + global_VecsnullVector
@@ -124,7 +152,7 @@ class TestVector(unittest.TestCase):
                 if not(addResult == global_Vecsv):#{}{}{}{}{}{}{}{}{}{}}{}
                         fail()
 
-        def test_sub(self):
+	def test_sub(self):
                 subResult = global_VecsunitVector - global_VecsnullVector
                 if not(subResult == global_VecsunitVector):
                         fail()
