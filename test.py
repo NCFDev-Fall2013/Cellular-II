@@ -73,12 +73,13 @@ class TestVector(unittest.TestCase):
                 
         def test_distance(self):
                 # test if distance(testpoints= known distance
-                self.assertEqual(round(vector.distance(0,0,.9,.9),3),1.273)
-                self.assertEqual(round(vector.distance(.9,.9,0,0),3),1.273)
-                self.assertEqual(round(vector.distance(.5,.3,.2,.7),3),.5)
-                self.assertEqual(round((vector.distance(.4,.3,.2,.7),3)),.447)
+                self.assertEqual(round(vector.distance(0.0,0.0,0.9,0.9),3),1.273)
+                self.assertEqual(round(vector.distance(0.9,0.9,0.0,0.0),3),1.273)
+                self.assertEqual(round(vector.distance(0.5,0.3,0.2,0.7),3),0.5)
+                self.assertEqual(round(vector.distance(0.4,0.3,0.2,0.7),3),0.447)
                 self.assertEqual(vector.distance(.3,.2,.3,.2),0)
-                self.assert_false(vector.distance(0,0,self.width,self.height) == math.sqrt(2))
+		#The below test was taken out until it can be revised. Test_Vector has no attribute width or height.                 
+#		self.assertFalse(vector.distance(0,0,self.width,self.height) == math.sqrt(2))
 
                 
         def test_diff(self):
@@ -97,7 +98,8 @@ class TestVector(unittest.TestCase):
 
         def test__iadd__(self):
                 print "In the garden of eden",global_VecsunitVector
-                print "test_iadd which involves 0",global_Vecsv
+		#Invalid variable global_Vescsv                
+		print "test_iadd which involves 0",global_Vecsv 
                 vTemp = global_Vecsv #storing the default in temporary variable vTemp
                 v2 = Vector(.3,.2)
                 global_Vecsv += v2
@@ -265,7 +267,9 @@ class TestCells(unittest.TestCase):
                 self.assertEqual(Alph.task , "FindingFood")
 
         def test_task_finding_food(self):
-                
+		#Placeholder to keep code running. 
+		#Remove pass when you write something here                
+		pass
                 
         def test_life_and_death(self):
         #uncomment print statements to see live output
