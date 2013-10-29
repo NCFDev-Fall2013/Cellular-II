@@ -27,27 +27,22 @@ class TestEnvironment(unittest.TestCase):
 		self.assertEquals(global_e.reseed_prob,10)
 		self.assertEquals(global_e.resistance, 600)
 		self.assertEquals(len(global_e.food_set), 10)
-		print "init_once is a go"
 
 	def test_add_food(self):
 		fc=len(global_e.food_set)
 		global_e.add_food(10)
 		self.assertEquals(len(global_e.food_set), fc+10)
-		print "add_food is a go"
 
 	def test_add_food_at_location(self):
 		global_e.cell_list=[]
 		test_cell=cells.Cell(0.1,0.2)
 		global_e.cell_list.append(cells.Cell(0.1, 0.2))
 		self.assertEquals(global_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
-		print "add_food_at_location is a go"
 	
 	def test_add_cells(self):
 		global_e.cell_list=[]
 		global_e.add_cells(5)
 		self.assertEquals(len(global_e.cell_list),5)
-		print "add_cells is a go"
-		pass
 
 	def test_add_cells_at_location(self):
 		pass
@@ -144,7 +139,6 @@ class TestVector(unittest.TestCase):
 		self.assertEqual(newV.x,0)
 
 	def test_add(self):
-		print "test_add which involves",global_Vecsv
 		addResult = global_VecsunitVector + global_VecsnullVector
 		if not(addResult == global_VecsunitVector):
 			fail()
@@ -295,6 +289,8 @@ class TestCells(unittest.TestCase):
 
 	def test_task_finding_food_fail(self):
 		"""Testing that a cell will be looking for food"""
+		global_e.cell_list = []
+		global_e.food_set  = set()
 		Alph = cells.Cell(.5,.5)
 		Alph.task = "FindingFood"
 		self.assertEqual(Alph.destination , None)
@@ -306,23 +302,24 @@ class TestCells(unittest.TestCase):
 
 	def test_task_finding_food_success(self):
 		"""Testing that a cell should be able to find food"""
-		global_e.init_once(0,0)
-		environment = global_e
-		environment.add_cell_at_location(vector.Point(.5,.5))
-		Steve = environment.cell_list[0]
-		environment.one_tick()          # Steve should start finding food
-		invisible = vector.Position(Steve.pos.x + Steve.sight_range + .1 , Steve.pos.y + Steve.sight_range + .1)
-		visible   = vector.Position(Steve.pos.x + Steve.sight_range - .1 , Steve.pos.y + Steve.sight_range - .1)
+		global_e.cell_list = []
+		global_e.food_set  = set()
+		global_e.add_cell_at_location(vector.Point(.5,.5))
+		Steve = global_e.cell_list[0]
+		global_e.tick()
+		global_e.tick()
+		invisible = vector.Point(Steve.pos.x + Steve.sight_range + .1 , Steve.pos.y + Steve.sight_range + .1)
+		visible   = vector.Point(Steve.pos.x + Steve.sight_range - .1 , Steve.pos.y + Steve.sight_range - .1)
 		# Confirm Steve does not find the "invisible" food
-		environment.add_food_at_location(invisible)
+		global_e.add_food_at_location(invisible)
 		self.assertEqual(Steve.task , "FindingFood")
 		self.assertEqual(Steve.destination_type , "Exploration")
-		environment.one_tick()
+		global_e.tick()
 		self.assertEqual(Steve.task , "FindingFood")
 		self.assertEqual(Steve.destination_type , "Exploration")
 		# Confirm Steve does find the "visible" food
-		environment.add_food_at_location(visible)
-		environment.one_tick()
+		global_e.add_food_at_location(visible)
+		global_e.tick()
 		self.assertEqual(Steve.task , "GettingFood")
 		self.assertEqual(Steve.destination_type , "Food")
 		self.assertEqual(Steve.destination.x , visible.x)
