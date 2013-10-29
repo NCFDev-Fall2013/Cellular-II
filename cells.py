@@ -156,7 +156,7 @@ class Cell:
 		 	
 
 	        randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
-		    if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
+			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
 	            self.phenotype[0] += randomvariation
 	        else:
 			    direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
