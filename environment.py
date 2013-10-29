@@ -1,7 +1,7 @@
 # prevent anyone from running environment.py directly
 if __name__ == "__main__": print 'no'; exit(-1)
 
-import cells, food, random, unittest, singleton, vector, threading
+import cells, food, random, unittest, singleton, vector, threading, math
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count, add_food_rate=10, usr_resist=600):
@@ -37,29 +37,33 @@ class Environment(singleton.Singleton):
                 cell_list_clone = cell_list_initial[:]
                 for cell_A in cell_list_initial:
                         cell_list_clone.remove(cell_A)
-                for cell_B in cell_list_clone:
-                       if  math.sqrt((cell_B.x - cell_A.x)**2 + (cell_B.y - cell_A.y)**2) <= (cell_B.radius + cell_A.radius):
-                               print "OMG WE'RE TOUCHING ZOMG"
-			
+                        for cell_B in cell_list_clone:
+                               if  math.sqrt((cell_B.pos.x - cell_A.pos.x)**2 + (cell_B.pos.y - cell_A.pos.y)**2) <= (cell_B.radius + cell_A.radius):
+                                        print "OMG WE'RE TOUCHING ZOMG"
+                                        cell_A.vel = vector.Vector(0,0)
+                                        cell_B.vel = vector.Vector(0,0)
+                                        cell_A.acl = vector.Vector(0,0)
+                                        cell_B.acl = vector.Vector(0,0)
+                                        
 	def tick(self):
 		''' give each cell a turn and maybe add food to the world'''
 		# we need to lock the cell_list so that we can itterate through it
+                
 		self.lock.acquire()
-
+                
+                
 		for cell in self.cell_list:
 			cell.one_tick()
 			
 		# There is reseed_prob chance that a food item is added to the word at a random place.
 		if random.randint(0,100)<=self.reseed_prob:
 			self.add_food(1)
-                cell_col_list = environment.Environment().cell_list
-                self.collision_detection(cell_col_list)
-
 
 		self.turn += 1
 		
 		# maybe we can move this up before food is added?
 		self.lock.release()
+                
 
 	def food_at(self, pos, r):
 		'''return list of food within distance r of position pos'''
@@ -135,6 +139,10 @@ class Environment(singleton.Singleton):
                 # we need to lock the cell_list so that we can itterate through it
                 self.lock.acquire()
 
+                print "@_____@"
+                #print "ATTEMPTING COLLISION"
+                self.collision_detection(self.cell_list)
+                
                 for cell in self.cell_list:
                         cell.one_tick()
                         

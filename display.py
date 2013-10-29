@@ -91,7 +91,7 @@ class Display(Thread):
 			self.environment.lock.acquire()
 			for food in self.environment.food_set:
 				
-				# convert the food coordinates too coordinates that pygame can understand
+			# convert the food coordinates too coordinates that pygame can understand
 				x, y = convert_to_display_loc(food.pos)
 
 				# draw the food circles
@@ -99,7 +99,8 @@ class Display(Thread):
 
 			# draw all the cells
 			for cell in self.environment.cell_list:
-				print cell.color
+                                print "",
+				#print cell.color
 				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
 			self.environment.lock.release()
