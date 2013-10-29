@@ -13,7 +13,7 @@ def random_color():
 	return randomcolor
 
 class Cell:
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.5, 0.6, None, 0.001, 0.005, 0.0,False]):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.5, 0.6, None, 0.001, 0.005, 0.0]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -25,11 +25,13 @@ class Cell:
 		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
 		self.div_energy			= Phenotype[1]		# How much energy a cell needs to divide
 		self.div_mass			= Phenotype[2]		# How much mass a cell needs to divide
-		self.color		= Phenotype[3]
+		if Phenotype[3] == None:
+			self.color = random_color()
+			Phenotype[3] = self.color
+		else:	self.color		= Phenotype[3]
 		self.walk_force			= Phenotype[4]
 		self.density			= Phenotype[5]
 		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
-		self.childStatus				= Phenotype[7]
 		
 		# Required for motion:
 		self.energy		 = energy
@@ -180,7 +182,7 @@ class Cell:
 		
 		newphenotype.append(newcolor)
 		
-		for t in self.phenotype[4:7]:
+		for t in self.phenotype[4:]:
 		    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
 		    if t - randomvariation <= 0:
 		        t += randomvariation
@@ -189,7 +191,6 @@ class Cell:
 		        randomvariaton = randomvariation * direction
 		        t += randomvariation
 		    newphenotype.append(t)
-		newphenotype.append(True)
 		return newphenotype
 
 	def life_and_death(self):
