@@ -191,3 +191,53 @@ class Cell:
 		#cell_col_list = environment.Environment().cell_list
 		#self.collision_detection(cell_col_list, self.x, self.y, self.radius)
                 
+        def collideWith(self, foe):
+	#assumed cells are colliding
+	
+	#get distance between cell radii as a vector
+		selfPos = self.pos
+		foePos = foe.pos
+		selfPos.x = round(selfPos.x,5)
+		selfPos.y = round(selfPos.y, 5)
+		foePos.x = round(foePos.x, 5)
+		foePos.y = round(foePos.y, 5)
+		xDiff = selfPos.x - foePos.x
+		print "xDiff = ", xDiff
+		yDiff = selfPos.y - foePos.y
+                print "yDiff = ", yDiff
+		dist = math.sqrt(xDiff**2 + yDiff**2)
+		dist = round(dist, 5)
+		print "dist = ", dist
+                dist += 8
+		distVec = Vector(xDiff, yDiff)
+		distVec.x = round(distVec.x,3)
+		distVec.y = round(distVec.y,3)
+		unitVec = distVec/dist
+		unitVec.x = round(unitVec.x, 3)
+		unitVec.y = round(unitVec.y, 3)
+		print "unitvec = ", unitVec
+
+	#make a force vector
+		forcApp = 1/dist
+		forcApp = round(forcApp, 3)
+		print "forceApp", forcApp
+		forcVec = unitVec * forcApp
+		forcVec.x = round(forcVec.x, 3)
+		forcVec.y = round(forcVec.y, 3)
+		print "forceVec", forcVec
+
+	#apply the force vector to other cell
+		#the target's acceration is changed
+		#by F/target's mass
+ 		
+		targetPushVec = forcVec/foe.mass
+		targetPushVec.x = round(targetPushVec.x, 3)
+		targetPushVec.y = round(targetPushVec.y, 3)
+		
+		round(targetPushVec.y, 3)
+		print "targetPushVec = ", targetPushVec
+		foe.acl.x = round(foe.acl.x, 5)
+		foe.acl.y = round(foe.acl.y, 5)
+		foe.vel.x = round(foe.vel.x, 5)
+		foe.vel.y = round(foe.vel.y, 5)
+		foe.acl += -targetPushVec

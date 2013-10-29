@@ -40,10 +40,12 @@ class Environment(singleton.Singleton):
                         for cell_B in cell_list_clone:
                                if  math.sqrt((cell_B.pos.x - cell_A.pos.x)**2 + (cell_B.pos.y - cell_A.pos.y)**2) <= (cell_B.radius + cell_A.radius):
                                         print "OMG WE'RE TOUCHING ZOMG"
-                                        cell_A.vel = vector.Vector(0,0)
-                                        cell_B.vel = vector.Vector(0,0)
-                                        cell_A.acl = vector.Vector(0,0)
-                                        cell_B.acl = vector.Vector(0,0)
+##                                        cell_A.vel = vector.Vector(0,0)
+##                                        cell_B.vel = vector.Vector(0,0)
+##                                        cell_A.acl = vector.Vector(0,0)
+##                                        cell_B.acl = vector.Vector(0,0)
+                                        cell_A.collideWith(cell_B)
+                                        cell_B.collideWith(cell_A)
                                         
 	def tick(self):
 		''' give each cell a turn and maybe add food to the world'''
