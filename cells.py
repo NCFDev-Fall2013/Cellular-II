@@ -154,17 +154,17 @@ class Cell:
 		
 		#This is for the variation
 		 	
-		    randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
-		    if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
-		        self.phenotype[0] += randomvariation
-		    else:
-		        direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-		        randomvariation = randomvariation * direction      #Then multiplies it by the float
-		        self.phenotype[0] += randomvariation                                              #And adds that value
-		    newphenotype.append(self.phenotype[0])
+	    randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
+		if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
+	        self.phenotype[0] += randomvariation
+	    else:
+			direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+		    randomvariation = randomvariation * direction      #Then multiplies it by the float
+		    self.phenotype[0] += randomvariation                                              #And adds that value
+		newphenotype.append(self.phenotype[0])
 		
 		for t in self.phenotype[1:3]:	
-		    randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
+		    randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .005
 		    if t - randomvariation <= 0:   #If subtracting the value would cause the phenotype to be negative it just adds it
 		        t += randomvariation
 		    else:
@@ -176,7 +176,7 @@ class Cell:
 		newphenotype.append(newcolor)
 		
 		for t in self.phenotype[4:]:
-		    randomvariation = random.uniform(0,.005)      #This half does the same thing, but with a larger value
+		    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
 		    if t - randomvariation <= 0:
 		        t += randomvariation
 		    else:
