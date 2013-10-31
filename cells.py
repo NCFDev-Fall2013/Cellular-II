@@ -13,7 +13,15 @@ def random_color():
 	return randomcolor
 
 class Cell:
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[2.0, 0.001, 0.5,0.6, 0.005, None, 0.0]):
+	default_emRatio = 2.0
+	default_div_energy = 0.5
+	default_div_mass = 0.6
+	default_color = None
+	default_walk_force = 0.001
+	default_density = 0.005
+	default_mutation_chance = 0.3
+
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -23,14 +31,15 @@ class Cell:
 		# Phenotypes:
 		self.phenotype			= Phenotype		# Stored for calc_variance's sake
 		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
-		self.walk_force			= Phenotype[1]
-		self.div_energy			= Phenotype[2]		# How much energy a cell needs to divide
-		self.div_mass			= Phenotype[3]		# How much mass a cell needs to divide
-		self.density			= Phenotype[4]
-		if Phenotype[5] == None:
+		self.div_energy			= Phenotype[1]		# How much energy a cell needs to divide
+		self.div_mass			= Phenotype[2]		# How much mass a cell needs to divide
+		if Phenotype[3] == None:
 			self.color = random_color()
-			Phenotype[5] = self.color
-		else:	self.color		= Phenotype[5]
+			Phenotype[3] = self.color
+		else:	
+			self.color		= Phenotype[3]
+		self.walk_force			= Phenotype[4]
+		self.density			= Phenotype[5]
 		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
 		
 		# Required for motion:
@@ -139,20 +148,64 @@ class Cell:
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
 
-	def calculate_variance(self):
+	def determine_phenotype(self):
 		"""Setting variance for child cell. Called when cell duplicates""" #Currently only color varaince 
 		newphenotype = []
 		##Below code needs to be rewritten##
 		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
-		newcolor = (self.phenotype[5][0] + random.randint(-15,15),self.phenotype[5][1] + random.randint(-15,15), +\
-			    self.phenotype[5][2] + random.randint(-15,15))
 		
-		while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 or newcolor[0]<0 or newcolor[0]>255 or newcolor[1]<0 or newcolor[1]>255 or newcolor[2]<0 or newcolor[2]>255:
-			newcolor = (self.phenotype[5][0]+random.randint(-15,15), int(self.phenotype[5][1]+random.randint(-15,15)/1.15), self.phenotype[5][2]+random.randint(-15,15))
-		for t in self.phenotype[:5]:	newphenotype.append(t)
-		newphenotype.append(newcolor)
-		for t in self.phenotype[6:]:	newphenotype.append(t)
-		return newphenotype
+		# make there be some (large) chance of mutationless division
+		mutation_chance = self.phenotype[6]
+		if random.uniform(0,100)>mutation_chance:
+			return self.phenotype
+		else:
+			#This is all the color stuff
+
+			newcolor = (self.phenotype[3][0] + random.randint(-15,15),self.phenotype[3][1] + random.randint(-15,15), +\
+				    self.phenotype[3][2] + random.randint(-15,15))
+			while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 or newcolor[0]<0 or newcolor[0]>255 or newcolor[1]<0 or newcolor[1]>255 or newcolor[2]<0 or newcolor[2]>255:
+				newcolor = (self.phenotype[3][0]+random.randint(-15,15), int(self.phenotype[3][1]+random.randint(-15,15)/1.15), self.phenotype[3][2]+random.randint(-15,15))
+
+			#This is for the variation
+
+
+			randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
+			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
+			    self.phenotype[0] += randomvariation
+			else:
+				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+
+				randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
+			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
+				self.phenotype[0] += randomvariation
+			else:
+				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+				randomvariation = randomvariation * direction      #Then multiplies it by the float
+				self.phenotype[0] += randomvariation                                              #And adds that value
+			newphenotype.append(self.phenotype[0])
+
+			for t in self.phenotype[1:3]:	
+			    randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .005
+			    if t - randomvariation <= 0:   #If subtracting the value would cause the phenotype to be negative it just adds it
+				t += randomvariation
+			    else:
+				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+				randomvariation = randomvariation * direction      #Then multiplies it by the float
+				t += randomvariation                                              #And adds that value
+			    newphenotype.append(t)
+
+			newphenotype.append(newcolor)
+
+			for t in self.phenotype[4:]:
+			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
+			    if t - randomvariation <= 0:
+				t += randomvariation
+			    else:
+				direction =  random.randint(-1,1)
+				randomvariaton = randomvariation * direction
+				t += randomvariation
+			    newphenotype.append(t)
+			return newphenotype
 
 	def life_and_death(self):
 		"""Checks if cell mass is great enough for division or low enough to cause death.""" 
@@ -166,13 +219,13 @@ class Cell:
 			#Create child 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype1	= self.calculate_variance()
+			newPhenotype1	= self.determine_phenotype()
 			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype2	= self.calculate_variance()
+			newPhenotype2	= self.determine_phenotype()
 			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
 			#Instantiates children at slightly different positions
