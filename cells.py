@@ -1,16 +1,51 @@
-import unittest, environment, random, math, weakref
+import unittest, environment, random, math, weakref, random, globals
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
 
+colors = globals.colorList()
+
 def call(a, f):
-	"""Unknown function usage. Called within __init__"""
+	"""Richard's Black Magic - Called within __init__"""
 	return f(a)
 	
-def random_color():
-	"""Returns tuple containing color index"""
-	randomcolor = random.randint(0,155),int(random.randint(0,155)/1.15),random.randint(0,155)
-	return randomcolor
+def startColor():
+	"""Gives parent cell initial color from text file"""
+	global colors
+	if len(colors) == 0: colors = globals.colorList()
+	pos = random.randint(0,(len(colors)-1))
+	return colors.pop(pos)
+
+def genRandomColor(rgbTuple):
+	"""creates a random color based on provided tuple"""
+	rgbList   = list(rgbTuple)
+	amount = [0,0,0]
+	amounts= []
+	color_change_magnitude = 1
+	for value in amount:
+		while value == 0: value = random.randint(-color_change_magnitude,color_change_magnitude)
+		amounts.append(value)
+
+	#decides whether or not each value changes
+	#0-2: single color change	(0-r,   1-g,   2-b)
+	#3-5: double color change	(3-rg,  4-rb,  5-gb)
+	#6-7: all or nothing		(6-rgb, 7-none)
+	mutate = random.randint(0,10)
+	
+	#changes single color
+	if   (mutate >= 0) and (mutate < 3): rgbList[mutate] += amounts[mutate]
+	elif (mutate == 8): rgbList[0] += amounts[0]
+	elif (mutate == 9): rgbList[1] += amounts[1]
+	elif (mutate ==10): rgbList[2] += amounts[2]
+	#changes two colors
+	elif (mutate >  2) and (mutate <  6):
+		if   (mutate == 3) or (mutate == 4): rgbList[0] += amounts[0]
+		elif (mutate == 3) or (mutate == 5): rgbList[1] += amounts[1]
+		elif (mutate == 4) or (mutate == 5): rgbList[2] += amounts[2]
+	
+	#makes sure color is valid
+	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
+	return tuple(rgbList)
 
 class Cell:
 	default_emRatio = 2.0
@@ -19,7 +54,7 @@ class Cell:
 	default_color = None
 	default_walk_force = 0.001
 	default_density = 0.005
-	default_mutation_chance = 0.3
+	default_mutation_chance = 30
 
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
@@ -29,29 +64,27 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Phenotypes:
-		self.phenotype			= Phenotype		# Stored for calc_variance's sake
-		self.emRatio			= Phenotype[0]		# Energy/Mass gain ratio
-		self.div_energy			= Phenotype[1]		# How much energy a cell needs to divide
-		self.div_mass			= Phenotype[2]		# How much mass a cell needs to divide
-		if Phenotype[3] == None:
-			self.color = random_color()
-			Phenotype[3] = self.color
-		else:	
-			self.color		= Phenotype[3]
-		self.walk_force			= Phenotype[4]
-		self.density			= Phenotype[5]
-		self.mutation_chance		= Phenotype[6]		# The likelihood of each phenotype mutating
-		
+
+		self.phenotype		= Phenotype		# Stored for calc_variance's sake
+		self.emRatio		= Phenotype[0]		# Energy/Mass gain ratio
+		self.div_energy		= Phenotype[1]		# How much energy a cell needs to divide
+		self.div_mass		= Phenotype[2]		# How much mass a cell needs to divide
+		self.walk_force		= Phenotype[4]
+		self.density		= Phenotype[5]
+		self.mutation_chance	= Phenotype[6] 		# The likelihood of each phenotype mutating
+		if Phenotype[3] == None: self.color = startColor()
+		else: self.color = genRandomColor(Phenotype[3])
+
 		# Required for motion:
-		self.energy		 = energy
-		self.mass		 = mass
-		self.exerted_force	 = Vector(0.0, 0.0)
+		self.energy		= energy
+		self.mass		= mass
+		self.exerted_force	= Vector(0.0, 0.0)
 		self.weight_management()
 
 		# Required for logic:
-		self.task		 = None
-		self.destination	 = None
-		self.destination_type	 = None
+		self.task		= None
+		self.destination	= None
+		self.destination_type	= None
 
 		# Task jumptable:
 		self.TaskTable			= {}
@@ -61,7 +94,7 @@ class Cell:
 
 	#"Task" functions, i.e. the cell's activities during each tick, depending on its task.
 	def task_none(self):
-		"""What the cell does should it have no task."""
+		"""What the cell defaults to in the instance of having no task."""
 		self.task = "FindingFood"
 
 	def task_finding_food(self):
@@ -159,16 +192,6 @@ class Cell:
 		if random.uniform(0,100)>mutation_chance:
 			return self.phenotype
 		else:
-			#This is all the color stuff
-
-			newcolor = (self.phenotype[3][0] + random.randint(-15,15),self.phenotype[3][1] + random.randint(-15,15), +\
-				    self.phenotype[3][2] + random.randint(-15,15))
-			while (newcolor[0]+newcolor[1]+newcolor[2])/3>150 or newcolor[0]<0 or newcolor[0]>255 or newcolor[1]<0 or newcolor[1]>255 or newcolor[2]<0 or newcolor[2]>255:
-				newcolor = (self.phenotype[3][0]+random.randint(-15,15), int(self.phenotype[3][1]+random.randint(-15,15)/1.15), self.phenotype[3][2]+random.randint(-15,15))
-
-			#This is for the variation
-
-
 			randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
 			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
 			    self.phenotype[0] += randomvariation
@@ -194,7 +217,8 @@ class Cell:
 				t += randomvariation                                              #And adds that value
 			    newphenotype.append(t)
 
-			newphenotype.append(newcolor)
+			newphenotype.append(self.color)
+			print "\n"*100
 
 			for t in self.phenotype[4:]:
 			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
