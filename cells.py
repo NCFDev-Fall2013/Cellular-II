@@ -285,7 +285,7 @@ class Cell:
 		dist = math.sqrt(xDiff**2 + yDiff**2)
 		#dist = round(dist, 5)
 		#print "dist = ", dist
-                dist += 8
+                dist += 5
 		distVec = Vector(xDiff, yDiff)
 		distVec.x = round(distVec.x,3)
 		distVec.y = round(distVec.y,3)
