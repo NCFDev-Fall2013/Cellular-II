@@ -47,7 +47,7 @@ def genRandomColor(rgbTuple):
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
 
-class Cell:
+class Cell(object):
 	default_emRatio = 2.0
 	default_div_energy = 0.5
 	default_div_mass = 0.6

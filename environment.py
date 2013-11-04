@@ -33,7 +33,7 @@ class Environment(singleton.Singleton):
 		"""Add a cell at location"""
 		self.cell_list.append(cells.Cell(pos.x, pos.y))
 
-	def add_specific_cell_at_location(self, cell, pos)
+	def add_specific_cell_at_location(self, cell, pos):
                 self.cell_list.append(cell(pos.x, pos.y))
 
         def collision_detection(self, cell_list_initial):
@@ -135,7 +135,7 @@ class Environment(singleton.Singleton):
                 for i in range(cell_count):
                         self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
 
-        def add_cells(self, cell_count, cell, pos):
+        def add_type_cells(self, cell_count, cell, pos):
                 ''' Add cell_count number of cells of random colors at random locations to the world'''
                 for i in range(cell_count):
                         cell.x = pos.x * random.random()
