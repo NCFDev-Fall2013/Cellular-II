@@ -18,9 +18,10 @@ class Virus(Cell):
     default_density = 0.005
     default_mutation_chance = 30
     default_resistance = 0
-
+    Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]
     def __init__(self, x, y, dS, cT, lS, incP, infB, k, infP, mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
-        super(Virus,self).__init__(x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance])
+        super(Virus,self).__init__(x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0)
+        
         self.driftSpeed = dS
         self.curveTendency = cT
         self.lifeSpan = lS
@@ -29,7 +30,6 @@ class Virus(Cell):
         self.infection_behavior = infB 
         self.key = k
         self.infection_potency = infP
-        self.environment = e
 
     def keyGen(self):
         key = round(random.random(), 2)*100
@@ -42,10 +42,10 @@ class Virus(Cell):
         chance = infection_potency - victim.resistance
         if random.random() <= chance:
             clone = InfectedCell(victim, incubation_period, symptom_potency, key)
-            environment.remove_cell(victim)
-            environment.add_specific_cell_at(clone, victim.pos)
+            environment.Environment().remove_cell(victim)
+            environment.Environment().add_specific_cell_at(clone, victim.pos)
         if victim.guessedKey(key):
-            environment.kill(self)
+            environment.Environment().kill_cell(self)
 
     def move_like_virus(self):
         if not bool_moving:

@@ -1,4 +1,5 @@
 import pygame, sys, threading, environment, random
+from virus import Virus
 from pygame.locals import *
 import pygame.gfxdraw
 
@@ -118,11 +119,9 @@ class Display(Thread):
 			for cell in self.environment.cell_list:
                                 print "",
 				#print cell.color
-                                if isinstance(cell,Virus):
+                                if isinstance(cell, Virus):
                                         #draw virus
-                                        self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
-                                elif isinstance(cell,InfectedCell):
-                                        #draw infected cell
+                                        self.draw_wrapping_square(cell, 2, pygame.Color(*cell.color))
                                 else:
                         		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
