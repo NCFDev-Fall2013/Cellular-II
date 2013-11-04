@@ -4,6 +4,7 @@ class Virus(Cell):
     lifeSpan =
     incubation_period =
     symptom_potency =
+    infection_behavior = 
     color =
     key =
     infection_potency =
@@ -37,10 +38,15 @@ class Virus(Cell):
             distanceTraveled = 0
             timeLeft = math.abs(round(curveTendency,0) + 1)
             while timeLeft > 0:
-                nextPos = Point(current_pos.x + speed, (speed/math.abs(speed))*(speedcurrent_pos.x**curveTendency))
+                nextPos = Point(current_pos.x + driftSpeed, (driftSpeed/math.abs(driftSpeed))*(current_pos.x**curveTendency))
                 moving_path.append(nextPos)
                 current_pos = nextPos
                 timeLeft--
+            curveTendency *= random.randomInteger()
+            if curveTendency > 10:
+                curveTendency = 10
+            elif curveTendency <= 0:
+                curveTendency = 1
         else:
             ticksMax = move_path.length
             ticksLeft = 0
@@ -48,11 +54,47 @@ class Virus(Cell):
                 self.pos.x = move_path[ticksLeft].x
                 self.ps.y = move_path[ticksLeft].y
                 ticksLeft++
-            bool_moving = FALSE
+            bool_moving = FALSE    
 
     def one_tick(self):
         self.move_like_virus()
         self.life_and_destruction()
 
-class InfectedCell(Cell, cell, iPeriod, symPot, parentKey):
+class InfectedCell(Cell, cell, virus, iPeriod, symPot, iBeh, parentKey):
+    pastSelf = cell
+    timeTilSymptoms = iPeriod #should be a natural number
+    iTimeTilSymptoms
+    timeToDie = symPot
+    keyForChildren = parentKey
+    typeOfInfection = iBeh
+    bool_showingSymptoms = FALSE
+    dispersionCount = 0
+    parent = cell
+    killer = virus
+    
+    def one_tick(self):
+        Cell.one_tick()
+        timeTilSymptoms--
+        if timeTilSymptoms <= 0:
+            bool_showingSymptoms = TRUE
+
+    def life_and_death(self):
+        if !bool_showingSymptoms:
+            Cell.life_and_death()
+        elif typeOfInfection = "on_death_disperse":
+            dispersionCount += timeTillSymptoms % 10
+            if self.energy > timeToDie:
+                self.energy -= timeToDie
+            else:
+                self.mass -= timeToDie
+                if: self.mass <= 0.1:
+                    environment.Environment().kill_cell(self)
+                    passer = keyForChildren - (keyForChildren % 10)
+                    killer.keyGen(passer)
+                    environment.Environment().add_cells(dispersionCount,killer,self.pos)
+                    
+                
+            
+            
+
     

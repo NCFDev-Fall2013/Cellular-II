@@ -33,6 +33,9 @@ class Environment(singleton.Singleton):
 		"""Add a cell at location"""
 		self.cell_list.append(cells.Cell(pos.x, pos.y))
 
+	def add_specific_cell_at_location(self, cell, pos)
+                self.cell_list.append(cell(pos.x, pos.y))
+
         def collision_detection(self, cell_list_initial):
                 cell_list_clone = cell_list_initial[:]
                 for cell_A in cell_list_initial:
@@ -131,10 +134,23 @@ class Environment(singleton.Singleton):
                 ''' Add cell_count number of cells of random colors at random locations to the world'''
                 for i in range(cell_count):
                         self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
+
+        def add_cells(self, cell_count, cell, pos):
+                ''' Add cell_count number of cells of random colors at random locations to the world'''
+                for i in range(cell_count):
+                        cell.x = pos.x * random.random()
+                        cell.y = pos.y * random.random()
+                        self.cell_list.append(cell)
+
                         
         def add_cell_at_location(self, pos):
                 """Add a cell at location"""
                 self.cell_list.append(cells.Cell(pos.x, pos.y))
+
+        def add_specific_cell_at_location(self, cell, pos):
+                """Add a cell at location"""
+                cell.pos = pos
+                self.cell_list.append(cell)
                         
         def tick(self):
                 ''' give each cell a turn and maybe add food to the world'''
