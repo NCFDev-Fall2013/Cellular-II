@@ -51,6 +51,23 @@ class Display(Thread):
 		self.environment = environment
 
 	# self -> displayobject cell -> circle, radius -> radius, color
+	def draw_wrapping_square(self, square, radius, color):
+                real_x, real_y = convert_to_display_loc(square.pos)
+
+                x_all = [real_x]
+                y_all = [real_y]
+
+                if square.pos.x < radius:
+                        x_all.append(display_width + real_x)
+                elif square.pos.x > 1 -radius:
+                        x_all.append(real_x - display_width)
+                if square.pos.y < radius:
+                        y_all.append(display_height + real_y)
+                elif square.pos.y > 1 -radius:
+                        y_all.append(real_y - display_height)
+                for x in x_all:
+                        for y in y_all:
+                                pygame.draw.square(windowSurfaceObj, color, (x,y), int(radius*display_width))
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
 
@@ -101,7 +118,13 @@ class Display(Thread):
 			for cell in self.environment.cell_list:
                                 print "",
 				#print cell.color
-				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
+                                if isinstance(cell,Virus):
+                                        #draw virus
+                                        self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
+                                elif isinstance(cell,InfectedCell):
+                                        #draw infected cell
+                                else:
+                        		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
 			self.environment.lock.release()
 
