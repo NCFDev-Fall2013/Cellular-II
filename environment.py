@@ -1,7 +1,7 @@
 # prevent anyone from running environment.py directly
 if __name__ == "__main__": print 'no'; exit(-1)
 
-import cells, food, random, unittest, singleton, vector, threading, math
+import cells, food, random, unittest, singleton, vector, threading, math, virus
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count, add_food_rate=10, usr_resist=600):
@@ -28,7 +28,10 @@ class Environment(singleton.Singleton):
 		''' Add cell_count number of cells of random colors at random locations to the world'''
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
-			
+                
+        def add_virus(self, pos):
+                self.cell_list.append(virus.Virus(pos.x, pos.y, 1, 1, 4, 4, "on_death_disperse", 50, 2))
+                
 	def add_cell_at_location(self, pos):
 		"""Add a cell at location"""
 		self.cell_list.append(cells.Cell(pos.x, pos.y))

@@ -50,7 +50,7 @@ def main():
 	World = environment.Environment(starting_food_count,starting_cell_count)
 	VirusPrime = virus.Virus(1, 1, 100, 4, "on_death_disperse", 100, 50, 1, World)
         if input_viruses == "y":
-                World.add_specific_cell_at_location(VirusPrime,[random.uniform(0, 1), random.uniform(0, 1)])
+                World.add_virus([random.uniform(0, 1), random.uniform(0, 1)])
 # 	Where dis is a thread 
 	dis = display.display(World)
 
