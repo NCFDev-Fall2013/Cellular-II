@@ -28,6 +28,13 @@ class Environment(singleton.Singleton):
 		''' Add cell_count number of cells of random colors at random locations to the world'''
 		for i in range(cell_count):
 			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
+
+	def add_viruses(self, virus_count):
+		''' Add virus_count number of cells of random colors at random locations to the world'''
+		for i in range(virus_count):
+			self.cell_list.append(virus.Virus(random.uniform(0, self.width), random.uniform(0, self.height)))
+
+	
                 
         def add_virus(self, pos):
                 self.cell_list.append(virus.Virus(pos.x, pos.y, 1, 1, 4, 4, "on_death_disperse", 50, 2))

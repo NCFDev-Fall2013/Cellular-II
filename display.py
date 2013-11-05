@@ -68,7 +68,7 @@ class Display(Thread):
                         y_all.append(real_y - display_height)
                 for x in x_all:
                         for y in y_all:
-                                pygame.draw.square(windowSurfaceObj, color, (x,y), int(radius*display_width))
+                                pygame.draw.rect(windowSurfaceObj, color, (x,y), int(radius*display_width))
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
 
@@ -117,11 +117,11 @@ class Display(Thread):
 
 			# draw all the cells
 			for cell in self.environment.cell_list:
-                                print "",
+                                print ""
 				#print cell.color
                                 if isinstance(cell, Virus):
                                         #draw virus
-                                        self.draw_wrapping_square(cell, 2, pygame.Color(*cell.color))
+                                        self.draw_wrapping_circle(cell, .2, pygame.Color(*cell.color))
                                 else:
                         		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list

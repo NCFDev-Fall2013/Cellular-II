@@ -7,8 +7,7 @@ from operator import itemgetter, attrgetter
 
 class Virus(Cell):
     
-    bool_moving = False
-    moving_path = []
+
 
     default_emRatio = 2.0
     default_div_energy = 0.5
@@ -19,8 +18,11 @@ class Virus(Cell):
     default_mutation_chance = 30
     default_resistance = 0
     Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]
-    def __init__(self, x, y, dS, cT, lS, incP, infB, k, infP, mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
+    def __init__(self, x, y, dS=1, cT=1, lS=4, incP=4, infB="on_death_disperse", k=50, infP=2, mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
         super(Virus,self).__init__(x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0)
+
+        self.bool_moving = False
+        self.moving_path = []
         
         self.driftSpeed = dS
         self.curveTendency = cT
@@ -48,37 +50,37 @@ class Virus(Cell):
             environment.Environment().kill_cell(self)
 
     def move_like_virus(self):
-        if not bool_moving:
-            bool_moving = True
+        if not self.bool_moving:
+            self.bool_moving = True
             current_pos = self.pos
-            moving_path_as_string = "x^",curveTendency
-            end_of_eY = environment.height - current_pos.y
-            end_of_eX = environment.width - current_pos.x
+            self.moving_path_as_string = "x^",self.curveTendency
+            end_of_eY = environment.Environment().height - current_pos.y
+            end_of_eX = environment.Environment().width - current_pos.x
             distanceTraveled = 0
-            timeLeft = math.abs(round(curveTendency,0) + 1)
+            timeLeft = abs(round(self.curveTendency,0) + 1)
             while timeLeft > 0:
-                nextPos = Point(current_pos.x + driftSpeed, (driftSpeed/math.abs(driftSpeed))*(current_pos.x**curveTendency))
-                moving_path.append(nextPos)
+                nextPos = Point(current_pos.x + self.driftSpeed, (self.driftSpeed/abs(self.driftSpeed))*(current_pos.x**self.curveTendency))
+                self.moving_path.append(nextPos)
                 current_pos = nextPos
                 timeLeft -= 1
-            curveTendency *= random.randomInteger()
-            if curveTendency > 10:
-                curveTendency = 10
-            elif curveTendency <= 0:
-                curveTendency = 1
+            self.curveTendency *= random.randint(-10,10)
+            if self.curveTendency > 10:
+                self.curveTendency = 10
+            elif self.curveTendency <= 0:
+                self.curveTendency = 1
         else:
-            ticksMax = move_path.length
+            ticksMax = len(self.moving_path)
             ticksLeft = 0
-            self.pos.x = move_path[ticksLeft].x
-            self.ps.y = move_path[ticksLeft].y
+            self.pos.x = self.moving_path[ticksLeft].x
+            self.pos.y = self.moving_path[ticksLeft].y
             ticksLeft += 1
-            if licksLeft == ticksMax:
-                bool_moving = False
-                moving_path = []
+            if ticksLeft == ticksMax:
+                self.bool_moving = False
+                self.moving_path = []
 
     def one_tick(self):
         self.move_like_virus()
-        self.life_and_destruction()
+        self.life_and_death()
 
 class InfectedCell(Cell):
 
