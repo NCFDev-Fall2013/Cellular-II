@@ -1,9 +1,10 @@
 # prevent anyone from running environment.py directly
 if __name__ == "__main__": print 'no'; exit(-1)
 
-import cells, food, random, unittest, singleton, vector, threading, math
+import random, threading, math  # Built-in Modules
+import cells, food, vector      # Custom Modules
 
-class Environment(singleton.Singleton):
+class Environment(object):
 	def init_once(self, food_count, cells_count, add_food_rate=10, usr_resist=600):
 		"""Generate a 1x1 environment with specified amount of food and cells"""
 		self.cell_list = []
@@ -207,78 +208,3 @@ class Environment(singleton.Singleton):
 
                         counter += 1
                 table_file.close()
-
-class CreationTest(unittest.TestCase):
-        ''' unit tests'''
-        def runTest(self):
-                ''' run unit tests'''
-                #environment already initialized in test.py
-                environment = Environment() 
-
-                # test that environment is a singleton
-                self.assertTrue(Environment() is environment)
-
-                # test that environment initializes properly
-                self.assertEquals(len(environment.cell_list), 10)
-                self.assertEquals(len(environment.food_set), 10)
-                self.assertTrue(environment.width > 0)
-                self.assertTrue(environment.height > 0)
-                
-                # test that cells are within bounds
-                for cell in environment.cell_list:
-                        self.assertTrue(cell.pos.x >= 0 and cell.pos.x <= environment.width and cell.pos.y >= 0 and cell.pos.y <= environment.height, "Cell location out of bounds.")
-                # ..and food is within bounds
-                for f in environment.food_set:
-                        self.assertTrue(f.pos.x >= 0 and f.pos.x <= environment.width and f.pos.y >= 0 and f.pos.y <= environment.height, "Food location out of bounds.")
-
-                environment.cell_list = []
-                # test that a cell will find and eat food underneath it
-                c = cells.Cell(environment.width/2, environment.height/2)
-                environment.cell_list.append(c)
-                food_count = len(environment.food_set)
-
-                environment.food_set.add(food.Food(environment.width/2, environment.height/2))          
-                environment.tick()
-                # test that food list count was decremented after food is eaten
-                self.assertEqual(len(environment.food_set), food_count) 
-                
-                # test that food inside the cell is eaten
-                environment.food_set.add(food.Food(environment.width/2 + c.radius - 0.000001, environment.height/2))
-                environment.tick()
-                self.assertEqual(len(environment.food_set), food_count)
-
-                # test that food outside the cell is not eaten
-                environment.food_set.add(food.Food(environment.width/2 + c.radius + 0.000001, environment.height/2))
-                environment.tick()
-                self.assertEqual(len(environment.food_set), food_count + 1)
-                
-                # test that add_cells adds the right number of cells
-                num_cells = len(environment.cell_list)
-                add_cells_count = random.randint(0,100)
-                environment.add_cells(add_cells_count)
-                self.assertEqual(len(environment.cell_list)-add_cells_count,num_cells)
-                
-
-def debug_print_table():
-        '''tests print_table by creating a world with set information and then print_tabling that world to make sure the info is accurate'''
-        tbl = "Debug_Cell_Table.txt"
-        Env = Environment(0,0)
-        Env.cell_list.append(Cell(0,0))
-        Env.cell_list.append(Cell(1,2))
-        Env.cell_list.append(Cell(7,5))
-        Env.cell_list.append(Cell(6,9))
-        Env.cell_list.append(Cell(-7,-7))
-        Env.print_table(tbl)
-        Env.tick()
-        Env.print_table(tbl)
-        Env.tick()
-        Env.print_table(tbl)
-        for run in xrange(5):
-                Env.tick()
-        Env.print_table(tbl)
-        for run in xrange(50):
-                Env.tick()
-        Env.print_table(tbl)
-
-
-
