@@ -1,6 +1,12 @@
-import pygame, sys, threading, environment, random
+#====Built-in Modules====#
+import sys, threading, random
+
+#====Required Modules====#
 from pygame.locals import *
-import pygame.gfxdraw
+import pygame, pygame.gfxdraw
+
+#=====Custom Modules=====#
+from environment import World
 
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
@@ -18,7 +24,7 @@ whiteColor = pygame.Color(255,255,255)
 # i'm pretty sure we don't need this
 #mousex, mousey = 0,0
 
-# start a thread so that we can later prevent environment from changing the list of cells while we interate through it
+# start a thread so that we can later prevent World from changing the list of cells while we interate through it
 Thread = threading.Thread
 
 # starts pygame
@@ -46,10 +52,7 @@ def convert_envi_loc(display_loc):
 	return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
 
 class Display(Thread):
-	def __init__(self,environment):
-		Thread.__init__(self)
-		self.environment = environment
-
+        
 	# self -> displayobject cell -> circle, radius -> radius, color
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
@@ -87,9 +90,9 @@ class Display(Thread):
 			# make the background white
 			windowSurfaceObj.fill(whiteColor)
 
-			# environment's food set is changing while the for loop runs, so we must lock it so that we do not iterate over a changing set
-			self.environment.lock.acquire()
-			for food in self.environment.food_set:
+			# World's food set is changing while the for loop runs, so we must lock it so that we do not iterate over a changing set
+			World.lock.acquire()
+			for food in World.food_set:
 				
 			# convert the food coordinates too coordinates that pygame can understand
 				x, y = convert_to_display_loc(food.pos)
@@ -98,12 +101,12 @@ class Display(Thread):
 				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 
 			# draw all the cells
-			for cell in self.environment.cell_list:
+			for cell in World.cell_list:
                                 print "",
 				#print cell.color
 				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
-			self.environment.lock.release()
+			World.lock.release()
 
 			# exit if the user says to
 			for event in pygame.event.get():
@@ -114,34 +117,25 @@ class Display(Thread):
 				elif event.type == MOUSEBUTTONDOWN:
 					if event.button == 1:
 						pos = Position(convert_envi_loc(event.pos))
-						environment.Environment().add_food_at_location(pos)
+						World.add_food_at_location(pos)
 					elif event.button == 3:
 						pos = Position(convert_envi_loc(event.pos))
-						environment.Environment().add_cell_at_location(pos)
+						World.add_cell_at_location(pos)
 				
 				# allow user to change resistance
 				# increase resistance if the user hits the U
 				elif event.type ==KEYDOWN:
 					if event.key == K_u:
-						environment.Environment().resistance +=1000
+						World.resistance +=1000
 
 					# decrease resistance if the user hits D
 					# prevent them from making resistance negative
 					elif event.key == K_d:
-						new_resistance = environment.Environment().resistance - 250
+						new_resistance = World.resistance - 250
 						if new_resistance >=0:
-							environment.Environment().resistance = new_resistance
+							World.resistance = new_resistance
 						else:
 							pass
 
 			# update the screen
 			pygame.display.update()
-
-# i don't think we need this
-#			fpsClock.tick(60)
-
-def display(environment):
-	dis = Display(environment)
-	dis.start()
-	# return the thread so that main can check if it is alive
-	return dis

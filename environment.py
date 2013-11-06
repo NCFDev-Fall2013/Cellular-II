@@ -1,21 +1,24 @@
 # prevent anyone from running environment.py directly
 if __name__ == "__main__": print 'no'; exit(-1)
 
-import random, threading, math  # Built-in Modules
-import cells, food, vector      # Custom Modules
+#====Built-in Modules====#
+import random, threading, math
+
+#=====Custom Modules=====#
+import cells, food, vector
+
+World = Environment()
 
 class Environment(object):
-	def init_once(self, food_count, cells_count, add_food_rate=10, usr_resist=600):
+	def __init__(self):
 		"""Generate a 1x1 environment with specified amount of food and cells"""
 		self.cell_list = []
 		self.food_set = set()
 		self.lock = threading.Lock()
 		self.width = self.height = 1.0
-		self.add_food(food_count)
-		self.add_cells(cells_count)
 		self.turn = 0
-		self.reseed_prob = add_food_rate
-		self.resistance = usr_resist
+		self.reseed_prob = 10
+		self.resistance = 600
 
 	def add_food(self, food_count):
 		"""Add food_count number of foods at random locations"""
@@ -178,9 +181,6 @@ class Environment(object):
                 ''' replaces a cell with food'''
                 self.cell_list.remove(cell)
                 self.add_food_at_location(cell.pos)
-
-        # print_table()
-        #       output a table of each cell state to a text file
 
         def print_table(self,filename,comment=""):
                 """Prints a table to a textfile with the provided name, with the provided comment above it."""

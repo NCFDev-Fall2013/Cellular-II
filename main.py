@@ -1,17 +1,17 @@
 #	Main function for Cellular II
-#	Version 1.1
+#	Version 1.3
 			
-#	DEPENDENCIES: pygame, cffi	
+#	DEPENDENCIES: pygame	
 
-#=====Import List=====#
-import environment
-import food
-import cells
-import copy
-import sys
-import display
+#====Built-in Modules====#
+import sys, copy
+
+#====Required Modules====#
 import pygame
-#====End of Imports===#
+
+#=====Custom Modules=====#
+from environment import World
+import food, cells, display
 
 def main():
 	"""Runs Cellular II"""
@@ -34,11 +34,13 @@ def main():
 		starting_cell_count = input('Enter starting amount of cells: ')
 
 
-#	Initialize World Object	
-	World = environment.Environment(starting_food_count,starting_cell_count)
+#	Add the proper number of Cells and Food
+        World.add_food(starting_food_count)
+	World.add_cells(starting_cell_count)
 	
 # 	Where dis is a thread 
-	dis = display.display(World)
+	dis = display.Display()
+	dis.start()
 
 #	Initial Tick
 	worldClock = pygame.time.Clock()
@@ -54,7 +56,7 @@ def main():
 
 #		Terminal output	
 		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', environment.Environment().resistance
+		print 'Resistance: ', World.resistance
 
 		(worldClock.tick(60) + 0.00000000001)
 		World.tick()

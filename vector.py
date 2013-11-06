@@ -1,8 +1,5 @@
-from math import sqrt
-from math import fabs
-from math import fmod
-
-#assert(environment.Environment().width == 1 and environment.Environment().height == 1, #"vector.py assumes world is 1x1")
+#====Built-in Modules====#
+from math import sqrt, fabs, fmod
 
 def distance(x1, y1, x2, y2):
         """Calculates and returns the distance""" 
