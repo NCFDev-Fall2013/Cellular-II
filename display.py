@@ -121,7 +121,7 @@ class Display(Thread):
 				#print cell.color
                                 if isinstance(cell, Virus):
                                         #draw virus
-                                        self.draw_wrapping_circle(cell, .2, pygame.Color(*cell.color))
+                                        self.draw_wrapping_circle(cell, .02, pygame.Color(*cell.color))
                                 else:
                         		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
