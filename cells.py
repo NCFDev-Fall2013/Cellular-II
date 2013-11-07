@@ -219,7 +219,7 @@ class Cell(object):
 			    newphenotype.append(t)
 
 			newphenotype.append(self.color)
-			print "\n"*100
+			#print "\n"*100
 
 			for t in self.phenotype[4:]:
 			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value

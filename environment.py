@@ -52,7 +52,7 @@ class Environment(singleton.Singleton):
                         cell_list_clone.remove(cell_A)
                         for cell_B in cell_list_clone:
                                if  math.sqrt((cell_B.pos.x - cell_A.pos.x)**2 + (cell_B.pos.y - cell_A.pos.y)**2) <= (cell_B.radius + cell_A.radius):
-                                        print "OMG WE'RE TOUCHING ZOMG"
+                                       # print "OMG WE'RE TOUCHING ZOMG"
 ##                                        cell_A.vel = vector.Vector(0,0)
 ##                                        cell_B.vel = vector.Vector(0,0)
 ##                                        cell_A.acl = vector.Vector(0,0)
@@ -167,7 +167,7 @@ class Environment(singleton.Singleton):
                 # we need to lock the cell_list so that we can itterate through it
                 self.lock.acquire()
 
-                print "@_____@"
+                # "@_____@"
                 #print "ATTEMPTING COLLISION"
                 self.collision_detection(self.cell_list)
                 
