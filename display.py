@@ -6,7 +6,9 @@ from pygame.locals import *
 import pygame, pygame.gfxdraw
 
 #=====Custom Modules=====#
-from environment import World
+#from environment import World
+import environment
+World = environment.World
 
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
@@ -117,10 +119,10 @@ class Display(Thread):
 				elif event.type == MOUSEBUTTONDOWN:
 					if event.button == 1:
 						pos = Position(convert_envi_loc(event.pos))
-						World.add_food_at_location(pos)
+						environment.add_food_at_location(pos)
 					elif event.button == 3:
 						pos = Position(convert_envi_loc(event.pos))
-						World.add_cell_at_location(pos)
+						environment.add_cell_at_location(pos)
 				
 				# allow user to change resistance
 				# increase resistance if the user hits the U

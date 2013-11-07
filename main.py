@@ -10,8 +10,11 @@ import sys, copy
 import pygame
 
 #=====Custom Modules=====#
-from environment import World
+#from environment import World
+import environment
 import food, cells, display
+
+World = environment.World
 
 def main():
 	"""Runs Cellular II"""
@@ -35,8 +38,8 @@ def main():
 
 
 #	Add the proper number of Cells and Food
-        World.add_food(starting_food_count)
-	World.add_cells(starting_cell_count)
+	environment.add_food(starting_food_count)
+	environment.add_cells(starting_cell_count)
 	
 # 	Where dis is a thread 
 	dis = display.Display()
@@ -55,8 +58,8 @@ def main():
 			sys.exit()
 
 #		Terminal output	
-		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', World.resistance
+#		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+#		print 'Resistance: ', World.resistance
 
 		(worldClock.tick(60) + 0.00000000001)
 		World.tick()

@@ -4,7 +4,9 @@ from operator import itemgetter, attrgetter
 import random, math, weakref
 
 #=====Custom Modules=====#
-from environment import World
+#from environment import World
+import environment
+World = environment.World
 from vector import Vector, Point
 import globals
 
@@ -211,7 +213,7 @@ class Cell:
 			    newphenotype.append(t)
 
 			newphenotype.append(self.color)
-			print "\n"*100
+#			print "\n"*100
 
 			for t in self.phenotype[4:]:
 			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
