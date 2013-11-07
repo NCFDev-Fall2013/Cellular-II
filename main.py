@@ -58,13 +58,14 @@ def main():
 #						###MAIN LOOP BEGIN###
         print "Beginning Loop"
 	while True:
+                if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
+                                sys.exit()
+
                 while dis.running_bool:
                         #print "running is ", dis.running_bool
                         i += 1
         #		If the user closes pygame, close the rest of the program
-                        if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
-                                sys.exit()
-
+                        
         #		Terminal output	
                         print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
                         print 'Resistance: ', environment.Environment().resistance
@@ -77,7 +78,7 @@ def main():
 
                         (worldClock.tick(60) + 0.00000000001)
                         World.tick()
-                if not dis.running_bool:
+                #if not dis.running_bool:
                         #where dropbox stat functionality would be
 
         #print "unreachable?"
@@ -86,6 +87,7 @@ def main():
 
 # 	Closes the graphics thread if the main loop is broken
 	dis._Thread__stop()
+	
 
 
 #Runs above function	
