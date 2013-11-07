@@ -104,7 +104,8 @@ class Display(Thread):
 
 			# draw all the cells
 			for cell in World.cell_list:
-                                print "",
+#                                print "",
+				sys.stderr.write("")
 				#print cell.color
 				self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
