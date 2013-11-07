@@ -14,6 +14,7 @@ import pygame
 #====End of Imports===#
 
 def main():
+        
 	"""Runs Cellular II"""
 	#Retrieve user input from command line
  	
@@ -55,24 +56,32 @@ def main():
 	i = 0						#Tick Counter
 
 #						###MAIN LOOP BEGIN###
+        print "Beginning Loop"
 	while True:
-		i += 1
-#		If the user closes pygame, close the rest of the program
-		if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
-			sys.exit()
+                while dis.running_bool:
+                        #print "running is ", dis.running_bool
+                        i += 1
+        #		If the user closes pygame, close the rest of the program
+                        if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
+                                sys.exit()
 
-#		Terminal output	
-		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', environment.Environment().resistance
+        #		Terminal output	
+                        print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+                        print 'Resistance: ', environment.Environment().resistance
 
-#					###----------Obsolete Code----------###
-#		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-#		#print 1000/
-#					###--------END Obsolete Code--------###
+        #					###----------Obsolete Code----------###
+        #		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+        #		#print 1000/
+        #					###--------END Obsolete Code--------###
 
 
-		(worldClock.tick(60) + 0.00000000001)
-		World.tick()
+                        (worldClock.tick(60) + 0.00000000001)
+                        World.tick()
+                if not dis.running_bool:
+                        #where dropbox stat functionality would be
+
+        #print "unreachable?"
+                        
 #						###MAIN LOOP END###
 
 # 	Closes the graphics thread if the main loop is broken

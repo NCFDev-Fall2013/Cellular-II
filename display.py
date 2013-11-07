@@ -2,6 +2,7 @@ import pygame, sys, threading, environment, random
 from pygame.locals import *
 import pygame.gfxdraw
 
+
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
 class Position():
@@ -17,6 +18,8 @@ whiteColor = pygame.Color(255,255,255)
 
 # i'm pretty sure we don't need this
 #mousex, mousey = 0,0
+
+
 
 # start a thread so that we can later prevent environment from changing the list of cells while we interate through it
 Thread = threading.Thread
@@ -46,10 +49,12 @@ def convert_envi_loc(display_loc):
 	return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
 
 class Display(Thread):
+        
+
 	def __init__(self,environment):
 		Thread.__init__(self)
 		self.environment = environment
-
+                self.running_bool = True
 	# self -> displayobject cell -> circle, radius -> radius, color
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
@@ -133,6 +138,9 @@ class Display(Thread):
 							environment.Environment().resistance = new_resistance
 						else:
 							pass
+					elif event.key == K_p:
+                                                if self.running_bool == True: self.running_bool = False
+                                                else: self.running_bool = True
 
 			# update the screen
 			pygame.display.update()
