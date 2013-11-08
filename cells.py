@@ -58,6 +58,12 @@ class Cell(object):
 	default_resistance = 0
 
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
+                self.keyList = []
+                for i in range(0,9):
+                        self.keyList.append([])
+                        for j in range (0,9):
+                                self.keyList[i].append(False)
+
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -323,13 +329,13 @@ class Cell(object):
         def guessedKey(self, vKey):
                 vKeyO = vKey % 10 #gets the number in the ones place in vKey
                 vKeyT = (vKey - vKeyO)/10 #gets the number in the tens place in vKey
-                if keyList[vKeyT][vKeyO] == TRUE : #if the cell already knows the key
-                        return TRUE
-                randN = round(math.rand(),2)*100
+                if self.keyList[vKeyT][vKeyO] == True : #if the cell already knows the key
+                        return True
+                randN = round(random.random(),2)*100
                 randNO = randN % 10
                 randNT = (randN - randNO)/10
                 #if the guess shares the same tens value and is at least 2 units away from the ones value
                 if vKeyT == randNT and vKeyO < randNT + 2 and vKeyO >= randNT - 2:
-                        keyList[randNT][randNO] = TRUE
-                        return TRUE
-                return FALSE #if this is reached, all guesses have failed
+                        self.keyList[randNT][randNO] = True
+                        return True
+                return False #if this is reached, all guesses have failed

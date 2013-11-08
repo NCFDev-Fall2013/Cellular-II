@@ -68,7 +68,7 @@ class Display(Thread):
                         y_all.append(real_y - display_height)
                 for x in x_all:
                         for y in y_all:
-                                pygame.draw.rect(windowSurfaceObj, color, (x,y), int(radius*display_width))
+                                pygame.draw.rect(windowSurfaceObj, color, (x,y,radius,radius) , 0)
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
 
@@ -93,6 +93,7 @@ class Display(Thread):
 		for x in x_all:
 			for y in y_all:
 				pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))
+				
 
 # these commented commands will draw hollow cells should we desire to make them hollow
 #				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
@@ -121,7 +122,7 @@ class Display(Thread):
 				#print cell.color
                                 if isinstance(cell, Virus):
                                         #draw virus
-                                        self.draw_wrapping_circle(cell, .02, pygame.Color(*cell.color))
+                                        self.draw_wrapping_square(cell, 5, pygame.Color(*cell.color))
                                 else:
                         		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
 			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list

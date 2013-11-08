@@ -34,8 +34,11 @@ class Environment(singleton.Singleton):
 		for i in range(virus_count):
 			self.cell_list.append(virus.Virus(random.uniform(0, self.width), random.uniform(0, self.height)))
 
+        def add_viruses_at_loc(self, virus_count, loc):
+                for i in range(virus_count):
+			self.cell_list.append(virus.Virus(loc.x + .01*random.uniform(0, 1), loc.y + .01*random.uniform(0, 1)))
+
 	
-                
         def add_virus(self, pos):
                 self.cell_list.append(virus.Virus(pos.x, pos.y, 1, 1, 4, 4, "on_death_disperse", 50, 2))
                 
@@ -44,11 +47,14 @@ class Environment(singleton.Singleton):
 		self.cell_list.append(cells.Cell(pos.x, pos.y))
 
 	def add_specific_cell_at_location(self, cell, pos):
-                self.cell_list.append(cell(pos.x, pos.y))
+                cell.pos.x = pos.x
+                cell.pos.y = pos.y
+                self.cell_list.append(cell)
 
         def collision_detection(self, cell_list_initial):
                 cell_list_clone = cell_list_initial[:]
-                for cell_A in cell_list_initial:
+                cell_list_doubleClone = cell_list_initial[:]
+                for cell_A in cell_list_doubleClone:
                         cell_list_clone.remove(cell_A)
                         for cell_B in cell_list_clone:
                                if  math.sqrt((cell_B.pos.x - cell_A.pos.x)**2 + (cell_B.pos.y - cell_A.pos.y)**2) <= (cell_B.radius + cell_A.radius):

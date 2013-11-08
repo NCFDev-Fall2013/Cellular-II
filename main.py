@@ -31,10 +31,14 @@ def main():
 	elif len(sys.argv) == 3:			#Evaluates for the case: { python Cellular-II.py $2 $3 } (two args)
 		starting_food_count  = int(sys.argv[1])
 		starting_cell_count  = int(sys.argv[2])
+	elif len(sys.argv) == 4:
+                starting_food_count = int(sys.argv[1])
+                starting_cell_count = int(sys.argv[2])
+                starting_virus_count = int(sys.argv[3])
 	else:						#Evaluates for the case { python Cellular-II.py } (no args) unexpected number of args
 		starting_food_count = input('Enter starting amount of food: ')
 		starting_cell_count = input('Enter starting amount of cells: ')
-		input_viruses = raw_input('Start with viruses?:')
+		starting_virus_count = input('Enter starting amount of viruses:')
 ##		continue_passing_args = raw_input('Do you want to modify other things? y/n  ')
 ##		if continue_passing_args == "y":
 ##			sim_speed = input('Enter simulation speed (60 = fast, 15 = slow): ')            #Controls simulation speed
@@ -48,9 +52,7 @@ def main():
 
 #	Initialize World Object	
 	World = environment.Environment(starting_food_count,starting_cell_count)
-	VirusPrime = virus.Virus(1, 1, 100, 4, "on_death_disperse", 100, 50, 1, World)
-        if input_viruses == "y":
-                World.add_viruses(2)
+        World.add_viruses(starting_virus_count)
 # 	Where dis is a thread 
 	dis = display.display(World)
 
