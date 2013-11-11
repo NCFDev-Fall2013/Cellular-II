@@ -2,6 +2,7 @@ import pygame, sys, threading, environment, random
 from virus import Virus
 from pygame.locals import *
 import pygame.gfxdraw
+import getItIn
 
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
@@ -31,8 +32,8 @@ pygame.init()
 # set dimensions of display window
 display_width = 500
 display_height = 500
-windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 
+windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 #window title
 pygame.display.set_caption('Nautical Cell Force 2')
 
@@ -50,6 +51,11 @@ class Display(Thread):
 	def __init__(self,environment):
 		Thread.__init__(self)
 		self.environment = environment
+		self.onStart = True
+		self.running = False
+		myfont = pygame.font.SysFont("Times New Roman", 12)
+		self.inbox = getItIn.Innie(50,50,windowSurfaceObj,3, myfont)
+		
 
 	# self -> displayobject cell -> circle, radius -> radius, color
 	def draw_wrapping_square(self, square, radius, color):
@@ -100,9 +106,57 @@ class Display(Thread):
 #				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
 #				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
 				
-				
+
+        def shakeCell(self, cell):
+                initial_pos = cell.pos
+                richard = random.uniform(-.001,.001)
+                i = 0
+                while i < 10:
+                        cell.pos.x += richard
+                        cell.pos.y += richard
+                        richard = random.uniform(-.001,.001)
+                        i += 1
+
+
+        def tapping(self):
+                return True
+
+        def showStart(self):
+                #windowSurfaceObj.blit(self.menImg, self.menImgRect)
+                imgClone = self.menImg.copy()
+                
+                for event in pygame.event.get():
+                                imgClone.blit(self.inbox.selfUpped(event),(self.inbox.x,self.inbox.y))
+                                #self.inbox.upSelf(event)	
+				if event.type ==QUIT:
+					pygame.quit()
+					self.onStart = False
+					return ()
+                                elif event.type ==KEYDOWN:
+					if event.key == K_SPACE:
+						self.onStart = False
+						self.running = True
+					elif event.key == K_ESCAPE:
+						pygame.quit()
+                                                self.onStart = False
+                                                return ()
+                if self.inbox.updateBool:
+                        windowSurfaceObj.blit(imgClone,self.menImgRect)
+                        self.inbox.updateBool = False
+                pygame.display.flip()
+
 	def run(self):
-		while True:
+                self.menImg = pygame.image.load("cellMenu.jpeg")
+                self.menImgRect = self.menImg.get_rect()
+                self.menImgSize = self.menImg.get_size()
+                windowSurfaceObj = pygame.display.set_mode(self.menImgSize, pygame.FULLSCREEN)
+                windowSurfaceObj.blit(self.menImg,self.menImgRect)
+                while self.onStart:
+                        self.showStart()
+
+                windowSurfaceObj = pygame.display.set_mode((display_width,display_height), pygame.FULLSCREEN)
+
+		while self.running:
 			# make the background white
 			windowSurfaceObj.fill(whiteColor)
 
@@ -141,7 +195,7 @@ class Display(Thread):
 					elif event.button == 3:
 						pos = Position(convert_envi_loc(event.pos))
 						environment.Environment().add_cell_at_location(pos)
-				
+
 				# allow user to change resistance
 				# increase resistance if the user hits the U
 				elif event.type ==KEYDOWN:
@@ -156,6 +210,13 @@ class Display(Thread):
 							environment.Environment().resistance = new_resistance
 						else:
 							pass
+					elif event.key == K_s:
+                                                for cell in self.environment.cell_list:
+                                                        self.shakeCell(cell)
+                                        elif event.key == K_ESCAPE:
+                                                pygame.quit()
+                                                return ()
+                                                
 
 			# update the screen
 			pygame.display.update()
