@@ -1,0 +1,22 @@
+CURRENT DEFINITION
+--Two catagories of mutations--
+1) Percent energy: Leftover energy alotment 
+	* amount of energy that can be attributed to certain phenotypes if there is energy leftover for that tick
+
+2) Absloute energy
+	* Bare minimum energy needed to survive.
+
+REDEFINE:
+--Two catagories of mutations--
+1) 	Intrinsic Attributes of Cell; able to vary from 1-99 independent of other attributes 
+	(i.e. all could be 1 or all could be 99 or any other combination inbetween). The Cell "AI."
+	--Cell Phobia
+	--Required Division Mass
+	--Required Division Energy
+	--Mutation chance/coeffecient
+	
+	
+2)	Tasks that cell must divy up energy to accomplish.
+	--Movement per tick
+	--Vision
+	--Energy reserve
