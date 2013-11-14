@@ -34,21 +34,35 @@ class TestEnvironment(unittest.TestCase):
 		self.assertEquals(len(global_e.food_set), fc+10)
 
 	def test_add_food_at_location(self):
-		global_e.cell_list=[]
-		test_cell=cells.Cell(0.1,0.2)
-		global_e.cell_list.append(cells.Cell(0.1, 0.2))
-		self.assertEquals(global_e.cell_list[0].pos.distance_to(test_cell.pos), 0.0)
+		global_e.food_set=[]
+		#This works in add food but not anywhere else for unknown reasons
+#		global_e.food_set.add(food.Food(0.5, 0.5))
+		#global_e.add_food_at_location(vector.Point(0.1,0.1))
+		#self.assertEquals(global_e.food_set[0].pos, vector.Point(0.1,0.1))  
 	
 	def test_add_cells(self):
 		global_e.cell_list=[]
 		global_e.add_cells(5)
 		self.assertEquals(len(global_e.cell_list),5)
 
-	def test_add_cells_at_location(self):
-		pass
+	def test_add_cell_at_location(self):
+		global_e.cell_list=[]
+		global_e.add_cell_at_location(vector.Point(0.5, 0.5))
+		self.assertEquals(global_e.cell_list[0].pos,vector.Point(0.5, 0.5))	
 
 	def test_tick(self):
-		pass
+		global_e.cell_list=[]
+		global_e.cell_list.append(cells.Cell(0.5,0.5, 0.7, 0.3, 0.5, 0.5))
+		global_e.add_food(50)
+		print len(global_e.cell_list)
+#		global_e.add_cell_at_location(vector.Point(0.1,0.5))
+#		global_e.add_cell_at_location(vector.Point(0.5,0.1))
+#		global_e.add_cell_at_location(vector.Point(0.1,0.1))
+		global_e.tick()
+		print global_e.cell_list[0].pos
+		global_e.tick()		
+		#self.assertFalse(global_e.cell_list[0].pos==vector.Point(0.5,0.5))
+	
 
 	def test_food_at(self):
 		pass
@@ -57,7 +71,13 @@ class TestEnvironment(unittest.TestCase):
 		pass
 
 	def test_remove_cell(self):
-		pass
+		global_e.cell_list=[]
+		global_e.food_set=set()
+		self.assertEquals(len(global_e.food_set), 0)
+		global_e.add_cell_at_location(vector.Point(0.5,0.5))
+		global_e.remove_cell(global_e.cell_list[0])
+		self.assertEquals(len(global_e.food_set), 1)
+		self.assertEquals(len(global_e.cell_list), 0)
 
 	def test_kill_cell(self): 
 		pass
