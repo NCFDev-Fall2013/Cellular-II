@@ -146,7 +146,7 @@ class Display(Thread):
                 pygame.display.flip()
 
         def run(self):
-                self.menImg = pygame.image.load("cellMenu.jpeg")
+                self.menImg = pygame.image.load("images.jpeg")
                 self.menImgRect = self.menImg.get_rect()
                 self.menImgSize = self.menImg.get_size()
                 windowSurfaceObj = pygame.display.set_mode(self.menImgSize, pygame.FULLSCREEN)
