@@ -2,14 +2,13 @@ import pygame, sys, threading, environment, random
 from virus import Virus
 from pygame.locals import *
 import pygame.gfxdraw
-import getItIn
 
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
 class Position():
-	def __init__(self, loc_tuple):
-		self.x = loc_tuple[0]
-		self.y = loc_tuple[1]
+        def __init__(self, loc_tuple):
+                self.x = loc_tuple[0]
+                self.y = loc_tuple[1]
 
 #set color constants
 redColor = pygame.Color(255,0,0)
@@ -32,33 +31,28 @@ pygame.init()
 # set dimensions of display window
 display_width = 500
 display_height = 500
-
 windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
+
 #window title
 pygame.display.set_caption('Nautical Cell Force 2')
 
 
 def convert_to_display_loc(pos):
-	'''change our system of coordinates into coordinates that pygame can understand'''
-	# pos contains a tuple of ( 0.0x, 0.0y)
-	return int(pos.x*display_width), int(pos.y*display_height)
+        '''change our system of coordinates into coordinates that pygame can understand'''
+        # pos contains a tuple of ( 0.0x, 0.0y)
+        return int(pos.x*display_width), int(pos.y*display_height)
 
 def convert_envi_loc(display_loc):
-	''' change pygame coordiantes to the format used by the rest of our program'''
-	return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
+        ''' change pygame coordiantes to the format used by the rest of our program'''
+        return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
 
 class Display(Thread):
-	def __init__(self,environment):
-		Thread.__init__(self)
-		self.environment = environment
-		self.onStart = True
-		self.running = False
-		myfont = pygame.font.SysFont("Times New Roman", 12)
-		self.inbox = getItIn.Innie(50,50,windowSurfaceObj,3, myfont)
-		
+        def __init__(self,environment):
+                Thread.__init__(self)
+                self.environment = environment
 
-	# self -> displayobject cell -> circle, radius -> radius, color
-	def draw_wrapping_square(self, square, radius, color):
+        # self -> displayobject cell -> circle, radius -> radius, color
+        def draw_wrapping_square(self, square, radius, color):
                 real_x, real_y = convert_to_display_loc(square.pos)
 
                 x_all = [real_x]
@@ -75,157 +69,102 @@ class Display(Thread):
                 for x in x_all:
                         for y in y_all:
                                 pygame.draw.rect(windowSurfaceObj, color, (x,y,radius,radius) , 0)
-	def draw_wrapping_circle(self, circle, radius, color):
-		# self is a display object, circle is a cell, radius and color are attributes of that cell
+        def draw_wrapping_circle(self, circle, radius, color):
+                # self is a display object, circle is a cell, radius and color are attributes of that cell
 
-		# real_x, real_y refers to the actual display coordinates of a cell
-		real_x, real_y = convert_to_display_loc(circle.pos)
+                # real_x, real_y refers to the actual display coordinates of a cell
+                real_x, real_y = convert_to_display_loc(circle.pos)
 
-		# make a list that conatins the real display coordinate. This list will later be used to display both the half that isn't cut off and the half tthat appears on the other side of the window
-		x_all = [real_x]
-		y_all = [real_y]
+                # make a list that conatins the real display coordinate. This list will later be used to display both the half that isn't cut off and the half tthat appears on the other side of the window
+                x_all = [real_x]
+                y_all = [real_y]
 
-		# if cell is on the edge of the screen (split halfway?) then append to the list of parts of the cell to be displayed a part on the other half of the screen
-		if circle.pos.x < radius:
-			x_all.append(display_width + real_x)
-		elif circle.pos.x > 1 - radius:
-			x_all.append(real_x - display_width)
-		if circle.pos.y < radius:
-			y_all.append(display_height + real_y)
-		elif circle.pos.y > 1 - radius:
-			y_all.append(real_y - display_height)
+                # if cell is on the edge of the screen (split halfway?) then append to the list of parts of the cell to be displayed a part on the other half of the screen
+                if circle.pos.x < radius:
+                        x_all.append(display_width + real_x)
+                elif circle.pos.x > 1 - radius:
+                        x_all.append(real_x - display_width)
+                if circle.pos.y < radius:
+                        y_all.append(display_height + real_y)
+                elif circle.pos.y > 1 - radius:
+                        y_all.append(real_y - display_height)
 
-		# display all portions of the cell when it's split between two sides
-		for x in x_all:
-			for y in y_all:
-				pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))
-				
+                # display all portions of the cell when it's split between two sides
+                for x in x_all:
+                        for y in y_all:
+                                pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))
+                                
 
 # these commented commands will draw hollow cells should we desire to make them hollow
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
-				
+#                                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
+#                                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
+#                                pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
+                                
+                                
+        def run(self):
+                while True:
+                        # make the background white
+                        windowSurfaceObj.fill(whiteColor)
 
-        def shakeCell(self, cell):
-                initial_pos = cell.pos
-                richard = random.uniform(-.001,.001)
-                i = 0
-                while i < 10:
-                        cell.pos.x += richard
-                        cell.pos.y += richard
-                        richard = random.uniform(-.001,.001)
-                        i += 1
+                        # environment's food set is changing while the for loop runs, so we must lock it so that we do not iterate over a changing set
+                        self.environment.lock.acquire()
+                        for food in self.environment.food_set:
+                                
+                        # convert the food coordinates too coordinates that pygame can understand
+                                x, y = convert_to_display_loc(food.pos)
 
+                                # draw the food circles
+                                pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
 
-        def tapping(self):
-                return True
-
-        def showStart(self):
-                #windowSurfaceObj.blit(self.menImg, self.menImgRect)
-                imgClone = self.menImg.copy()
-                
-                for event in pygame.event.get():
-                                imgClone.blit(self.inbox.selfUpped(event),(self.inbox.x,self.inbox.y))
-                                #self.inbox.upSelf(event)	
-				if event.type ==QUIT:
-					pygame.quit()
-					self.onStart = False
-					return ()
-                                elif event.type ==KEYDOWN:
-					if event.key == K_SPACE:
-						self.onStart = False
-						self.running = True
-					elif event.key == K_ESCAPE:
-						pygame.quit()
-                                                self.onStart = False
-                                                return ()
-                if self.inbox.updateBool:
-                        windowSurfaceObj.blit(imgClone,self.menImgRect)
-                        self.inbox.updateBool = False
-                pygame.display.flip()
-
-	def run(self):
-                self.menImg = pygame.image.load("cellMenu.jpeg")
-                self.menImgRect = self.menImg.get_rect()
-                self.menImgSize = self.menImg.get_size()
-                windowSurfaceObj = pygame.display.set_mode(self.menImgSize, pygame.FULLSCREEN)
-                windowSurfaceObj.blit(self.menImg,self.menImgRect)
-                while self.onStart:
-                        self.showStart()
-
-                windowSurfaceObj = pygame.display.set_mode((display_width,display_height), pygame.FULLSCREEN)
-
-		while self.running:
-			# make the background white
-			windowSurfaceObj.fill(whiteColor)
-
-			# environment's food set is changing while the for loop runs, so we must lock it so that we do not iterate over a changing set
-			self.environment.lock.acquire()
-			for food in self.environment.food_set:
-				
-			# convert the food coordinates too coordinates that pygame can understand
-				x, y = convert_to_display_loc(food.pos)
-
-				# draw the food circles
-				pygame.gfxdraw.filled_circle(windowSurfaceObj, x, y, int(0.01*display_width), redColor)
-
-			# draw all the cells
-			for cell in self.environment.cell_list:
+                        # draw all the cells
+                        for cell in self.environment.cell_list:
                                 print ""
-				#print cell.color
+                                #print cell.color
                                 if isinstance(cell, Virus):
                                         #draw virus
                                         self.draw_wrapping_square(cell, 5, pygame.Color(*cell.color))
                                 else:
-                        		self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
-			# we're no longer going through the cell list, so now allow other parts of this project to change the cell list
-			self.environment.lock.release()
+                                        self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
+                        # we're no longer going through the cell list, so now allow other parts of this project to change the cell list
+                        self.environment.lock.release()
 
-			# exit if the user says to
-			for event in pygame.event.get():
-				if event.type ==QUIT:
-					pygame.quit()
-					return ()
-				# add food or cell via left/right mouse click
-				elif event.type == MOUSEBUTTONDOWN:
-					if event.button == 1:
-						pos = Position(convert_envi_loc(event.pos))
-						environment.Environment().add_food_at_location(pos)
-					elif event.button == 3:
-						pos = Position(convert_envi_loc(event.pos))
-						environment.Environment().add_cell_at_location(pos)
+                        # exit if the user says to
+                        for event in pygame.event.get():
+                                if event.type ==QUIT:
+                                        pygame.quit()
+                                        return ()
+                                # add food or cell via left/right mouse click
+                                elif event.type == MOUSEBUTTONDOWN:
+                                        if event.button == 1:
+                                                pos = Position(convert_envi_loc(event.pos))
+                                                environment.Environment().add_food_at_location(pos)
+                                        elif event.button == 3:
+                                                pos = Position(convert_envi_loc(event.pos))
+                                                environment.Environment().add_cell_at_location(pos)
+                                
+                                # allow user to change resistance
+                                # increase resistance if the user hits the U
+                                elif event.type ==KEYDOWN:
+                                        if event.key == K_u:
+                                                environment.Environment().resistance +=1000
 
-				# allow user to change resistance
-				# increase resistance if the user hits the U
-				elif event.type ==KEYDOWN:
-					if event.key == K_u:
-						environment.Environment().resistance +=1000
+                                        # decrease resistance if the user hits D
+                                        # prevent them from making resistance negative
+                                        elif event.key == K_d:
+                                                new_resistance = environment.Environment().resistance - 250
+                                                if new_resistance >=0:
+                                                        environment.Environment().resistance = new_resistance
+                                                else:
+                                                        pass
 
-					# decrease resistance if the user hits D
-					# prevent them from making resistance negative
-					elif event.key == K_d:
-						new_resistance = environment.Environment().resistance - 250
-						if new_resistance >=0:
-							environment.Environment().resistance = new_resistance
-						else:
-							pass
-					elif event.key == K_s:
-                                                for cell in self.environment.cell_list:
-                                                        self.shakeCell(cell)
-                                        elif event.key == K_ESCAPE:
-                                                pygame.quit()
-                                                return ()
-                                                
-
-			# update the screen
-			pygame.display.update()
+                        # update the screen
+                        pygame.display.update()
 
 # i don't think we need this
-#			fpsClock.tick(60)
+#                        fpsClock.tick(60)
 
 def display(environment):
-	dis = Display(environment)
-	dis.start()
-	# return the thread so that main can check if it is alive
-	return dis
+        dis = Display(environment)
+        dis.start()
+        # return the thread so that main can check if it is alive
+        return dis
