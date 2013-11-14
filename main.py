@@ -1,17 +1,20 @@
 #	Main function for Cellular II
-#	Version 1.1
+#	Version 1.3
 			
-#	DEPENDENCIES: pygame, cffi	
+#	DEPENDENCIES: pygame	
 
-#=====Import List=====#
-import environment
-import food
-import cells
-import copy
-import sys
-import display
+#====Built-in Modules====#
+import sys, copy
+
+#====Required Modules====#
 import pygame
-#====End of Imports===#
+
+#=====Custom Modules=====#
+#from environment import World
+import environment
+import food, cells, display
+
+World = environment.World
 
 def main():
 	"""Runs Cellular II"""
@@ -32,22 +35,15 @@ def main():
 	else:						#Evaluates for the case { python Cellular-II.py } (no args) unexpected number of args
 		starting_food_count = input('Enter starting amount of food: ')
 		starting_cell_count = input('Enter starting amount of cells: ')
-##		continue_passing_args = raw_input('Do you want to modify other things? y/n  ')
-##		if continue_passing_args == "y":
-##			sim_speed = input('Enter simulation speed (60 = fast, 15 = slow): ')            #Controls simulation speed
-##			add_food_rate = input('Enter desired food reseed probability: (normal: 10) ')   #Controls food reseed probability
-##			usr_resist = input('Enter world resistance (normal: 600): ')                    #Controls world resistance
-##		else:
-##			sim_speed = 45
-##			add_food_rate = 10
-##			usr_resist = 600
 
 
-#	Initialize World Object	
-	World = environment.Environment(starting_food_count,starting_cell_count)
+#	Add the proper number of Cells and Food
+	environment.add_food(starting_food_count)
+	environment.add_cells(starting_cell_count)
 	
 # 	Where dis is a thread 
-	dis = display.display(World)
+	dis = display.Display()
+	dis.start()
 
 #	Initial Tick
 	worldClock = pygame.time.Clock()
@@ -62,14 +58,8 @@ def main():
 			sys.exit()
 
 #		Terminal output	
-		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', environment.Environment().resistance
-
-#					###----------Obsolete Code----------###
-#		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-#		#print 1000/
-#					###--------END Obsolete Code--------###
-
+#		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+#		print 'Resistance: ', World.resistance
 
 		(worldClock.tick(60) + 0.00000000001)
 		World.tick()
