@@ -48,7 +48,7 @@ class Virus(Cell):
         self.symptom_potency = incP
 
         #type of infection - a string
-        self.infection_behavior = inf
+        self.infection_behavior = infB
 
         #viruses have keys - if a cell correctly resists a virus by rolling
         #then the cell will automatically resist viruses with the same key
