@@ -46,17 +46,52 @@ def genRandomColor(rgbTuple):
 	#makes sure color is valid
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
+class AI:
+	"""AI for cell"""
+	def __init__(self, div_energy=0.5, div_mass=0.6, walk_force=0.001, color=None, mutation_chance=30, density=0.005):
+		self.div_energy=div_energy
+		self.div_mass=div_mass
+		self.walk_force=walk_force
+		self.color=color
+		self.mutation_chance=mutation_chance
+		self.density=density
+
+
+class Static:
+	"""Attributes that take take a set amount of energy"""
+	def __init__(self, walk_force=0.001):
+		self.walk_force=walk_force
+		
+
+class Dynamic:
+	"""Attributes that take a percentage base of energy"""
+	def __init__(self, emRatio=2.0, run_force=0.01):
+		self.emRatio=emRatio
+		self.run_force=run_force
+
+class Phenotype:
+	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
+		self.AI=AI
+		self.Static=Static
+		self.Dynamic=Dynamic
+			
 
 class Cell:
+	"""
 	default_emRatio = 2.0
+	default_random_walk=1.0
 	default_div_energy = 0.5
 	default_div_mass = 0.6
 	default_color = None
 	default_walk_force = 0.001
+	default_run_force=0.01
 	default_density = 0.005
 	default_mutation_chance = 30
-
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
+	
+	default_AI=(default_div_energy, default_div_mass, default_randim_walk)
+	default_static=(default_walk_force)
+	"""
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -65,15 +100,15 @@ class Cell:
 
 		# Phenotypes:
 
-		self.phenotype		= Phenotype		# Stored for calc_variance's sake
-		self.emRatio		= Phenotype[0]		# Energy/Mass gain ratio
-		self.div_energy		= Phenotype[1]		# How much energy a cell needs to divide
-		self.div_mass		= Phenotype[2]		# How much mass a cell needs to divide
-		self.walk_force		= Phenotype[4]
-		self.density		= Phenotype[5]
-		self.mutation_chance	= Phenotype[6] 		# The likelihood of each phenotype mutating
-		if Phenotype[3] == None: self.color = startColor()
-		else: self.color = genRandomColor(Phenotype[3])
+		self.phenotype		= Phenotype			# Stored for calc_variance's sake
+		self.emRatio		= Phenotype.Dynamic.emRatio		# Energy/Mass gain ratio
+		self.div_energy		= Phenotype.AI.div_energy		# How much energy a cell needs to divide
+		self.div_mass		= Phenotype.AI.div_mass		# How much mass a cell needs to divide
+		self.walk_force		= Phenotype.Static.walk_force
+		self.density		= Phenotype.AI.density
+		self.mutation_chance	= Phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
+		if Phenotype.AI.color == None: self.color = startColor()
+		else: self.color = genRandomColor(Phenotype.AI.color)
 
 		# Required for motion:
 		self.energy		= energy
@@ -188,40 +223,40 @@ class Cell:
 		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
 		
 		# make there be some (large) chance of mutationless division
-		mutation_chance = self.phenotype[6]
+		mutation_chance = self.phenotype.mutation_chance
 		if random.uniform(0,100)>mutation_chance:
 			return self.phenotype
 		else:
-			randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
-			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
-			    self.phenotype[0] += randomvariation
+			randomvariation = random.uniform(0,.1) 			#Picks a random float between 0 and .001
+			if self.phenotype.emRatio - randomvariation <= 1:   	#If subtracting the value would cause the phenotype to be negative it just adds it
+			    self.phenotype.emRatio += randomvariation
 			else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
+				direction =  random.randint(-1,1)           	#Otherwise, it picks an integer between -1 and 1
 
-				randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
-			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
-				self.phenotype[0] += randomvariation
+				randomvariation = random.uniform(0,.5) 		#Picks a random float between 0 and .005
+			if self.phenotype.emRatio - randomvariation <= 1:  	#If subtracting the value would cause the phenotype to be negative it just adds it
+				self.phenotype.emRatio += randomvariation
 			else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction      #Then multiplies it by the float
-				self.phenotype[0] += randomvariation                                              #And adds that value
-			newphenotype.append(self.phenotype[0])
+				direction =  random.randint(-1,1)           	#Otherwise, it picks an integer between -1 and 1
+				randomvariation = randomvariation * direction   #Then multiplies it by the float
+				self.phenotype.emRatio += randomvariation     	#And adds that value
+			newphenotype.append(self.phenotype.emRatio)
 
-			for t in self.phenotype[1:3]:	
-			    randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .005
-			    if t - randomvariation <= 0:   #If subtracting the value would cause the phenotype to be negative it just adds it
+			for t in (self.phenotype.div_Energy,self.phenotype.div_mass, self.phenotype.walk_force):	
+			    randomvariation = random.uniform(0,.1) 		#Picks a random float between 0 and .005
+			    if t - randomvariation <= 0:   			#If subtracting the value would cause the phenotype to be negative it just adds it
 				t += randomvariation
 			    else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction      #Then multiplies it by the float
-				t += randomvariation                                              #And adds that value
+				direction =  random.randint(-1,1)          	#Otherwise, it picks an integer between -1 and 1
+				randomvariation = randomvariation * direction  	#Then multiplies it by the float
+				t += randomvariation                   		#And adds that value
 			    newphenotype.append(t)
 
 			newphenotype.append(self.color)
 			print "\n"*100
 
 			for t in self.phenotype[4:]:
-			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
+			    randomvariation = random.uniform(0,.001)      	#This half does the same thing, but with a larger value
 			    if t - randomvariation <= 0:
 				t += randomvariation
 			    else:
