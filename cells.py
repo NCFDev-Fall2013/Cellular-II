@@ -5,7 +5,7 @@ import random, math, weakref
 
 #=====Custom Modules=====#
 #from environment import World
-import environment
+import environment, familytree
 World = environment.World
 from vector import Vector, Point
 import globals
@@ -63,7 +63,7 @@ class Cell:
 	default_density = 0.005
 	default_mutation_chance = 30
 
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
+	def __init__(self, x, y, mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -71,7 +71,6 @@ class Cell:
 		self.acl = Vector(0.0, 0.0)
 
 		# Phenotypes:
-
 		self.phenotype		= Phenotype		# Stored for calc_variance's sake
 		self.emRatio		= Phenotype[0]		# Energy/Mass gain ratio
 		self.div_energy		= Phenotype[1]		# How much energy a cell needs to divide
@@ -92,6 +91,11 @@ class Cell:
 		self.task		= None
 		self.destination	= None
 		self.destination_type	= None
+
+		# Required for family tree:
+		self.ID = str(World.total_cells)
+		self.food_eaten
+		familytree.cell_record[self.ID] = [self.phenotype, World.turn, None, None]
 
 		# Task jumptable:
 		self.TaskTable			= {}
@@ -169,6 +173,7 @@ class Cell:
 		self.energy += f.energy/self.emRatio
 		self.mass += f.energy - (f.energy/self.emRatio)
 		World.remove_food(f)
+		self.food_eaten += 1
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
 	def weight_management(self):
@@ -239,20 +244,24 @@ class Cell:
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype1	= self.determine_phenotype()
-			World.total_cells += 1
 			World.cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
+			familytree.cell_record[self.ID][3] = str(World.total_cells)
+			World.total_cells += 1
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype2	= self.determine_phenotype()
-			World.total_cells += 1
 			World.cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
+			familytree.cell_record[self.ID][4] = str(World.total_cells)
+			World.total_cells += 1
 						
 			#Instantiates children at slightly different positions
+			familytree.cell_record[self.ID][2] = World.turn
 			World.remove_cell(self)
 		#Kills cell
 		elif self.mass <= 0.1:
+                        familytree.cell_record[self.ID][2] = World.turn
                         World.kill_cell(self)
 
         		

@@ -5,7 +5,7 @@ if __name__ == "__main__": print 'no'; exit(-1)
 import random, threading, math
 
 #=====Custom Modules=====#
-import food, vector
+import food, vector, familytree
 
 class Environment(object):
 	def __init__(self):
@@ -39,6 +39,7 @@ class Environment(object):
                 for cell in self.cell_list:
                         cell.one_tick()
                 print "Cells this tick:",self.total_cells
+                for cell in self.cell_list: print "Cell",cell.ID,"is still alive!"
                 
                 # There is reseed_prob chance that a food item is added to the word at a random place.
                 if random.randint(0,100)<=self.reseed_prob:
@@ -56,7 +57,6 @@ class Environment(object):
                 '''delete a food item'''
                 try:
                         self.food_set.remove(food)
-
                 # handle food having already been removed
                 except KeyError:
                         pass
@@ -86,9 +86,13 @@ def add_cells(cell_count):
 	''' Add cell_count number of cells of random colors at random locations to the world'''
 	for i in range(cell_count):
 		World.cell_list.append(cells.Cell(random.uniform(0, World.width), random.uniform(0, World.height)))
+		# Adds the cell ID to the list of origin cells
+		familytree.origin_cells.append(str(World.total_cells))
 		World.total_cells += 1
                         
 def add_cell_at_location(pos):
 	"""Add a cell at location"""
 	World.cell_list.append(cells.Cell(pos.x, pos.y))
+	# Adds the cell ID to the list of origin cells
+	familytree.origin_cells.append(str(World.total_cells))
 	World.total_cells += 1
