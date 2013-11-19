@@ -8,7 +8,7 @@ import pygame, pygame.gfxdraw
 #=====Custom Modules=====#
 #from environment import World
 import environment
-from Vector import Point as Position
+from vector import Point as Position
 World = environment.World
 
 #set color constants
