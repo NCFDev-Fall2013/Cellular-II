@@ -7,11 +7,10 @@ import random, threading, math
 #=====Custom Modules=====#
 import food, vector
 
-
-
 class Environment(object):
 	def __init__(self):
 		"""Generate a 1x1 environment with specified amount of food and cells"""
+		self.total_cells = 0
 		self.cell_list = []
 		self.food_set = set()
 		self.lock = threading.Lock()
@@ -39,7 +38,8 @@ class Environment(object):
                 
                 for cell in self.cell_list:
                         cell.one_tick()
-                        
+                print "Cells this tick:",self.total_cells
+                
                 # There is reseed_prob chance that a food item is added to the word at a random place.
                 if random.randint(0,100)<=self.reseed_prob:
                         add_food(1)
@@ -86,7 +86,9 @@ def add_cells(cell_count):
 	''' Add cell_count number of cells of random colors at random locations to the world'''
 	for i in range(cell_count):
 		World.cell_list.append(cells.Cell(random.uniform(0, World.width), random.uniform(0, World.height)))
+		World.total_cells += 1
                         
 def add_cell_at_location(pos):
 	"""Add a cell at location"""
 	World.cell_list.append(cells.Cell(pos.x, pos.y))
+	World.total_cells += 1

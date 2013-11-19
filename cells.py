@@ -239,12 +239,14 @@ class Cell:
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype1	= self.determine_phenotype()
+			World.total_cells += 1
 			World.cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype2	= self.determine_phenotype()
+			World.total_cells += 1
 			World.cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
 			#Instantiates children at slightly different positions
