@@ -95,7 +95,7 @@ class Cell:
 		# Required for family tree:
 		self.ID = str(World.total_cells)
 		self.food_eaten = 0 
-		familytree.cell_record[self.ID] = [self.phenotype, World.turn, None, None]
+		familytree.cell_record[self.ID] = [self.phenotype, World.turn, None, None, None]
 
 		# Task jumptable:
 		self.TaskTable			= {}
