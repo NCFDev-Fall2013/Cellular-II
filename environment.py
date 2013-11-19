@@ -38,8 +38,8 @@ class Environment(object):
                 
                 for cell in self.cell_list:
                         cell.one_tick()
-                print "Cells this tick:",self.total_cells
-                for cell in self.cell_list: print "Cell",cell.ID,"is still alive!"
+                for cell in familytree.cell_record:
+                        print cell,cell_record[cell]
                 
                 # There is reseed_prob chance that a food item is added to the word at a random place.
                 if random.randint(0,100)<=self.reseed_prob:
