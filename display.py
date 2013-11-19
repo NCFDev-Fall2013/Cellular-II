@@ -8,14 +8,8 @@ import pygame, pygame.gfxdraw
 #=====Custom Modules=====#
 #from environment import World
 import environment
+from Vector import Point as Position
 World = environment.World
-
-# Create a position class so we can add food via a mouse click
-# i guess i should import vector or something, but I did this instead
-class Position():
-	def __init__(self, loc_tuple):
-		self.x = loc_tuple[0]
-		self.y = loc_tuple[1]
 
 #set color constants
 redColor = pygame.Color(255,0,0)
@@ -23,17 +17,11 @@ greenColor = pygame.Color(0,255,0)
 blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
 
-# i'm pretty sure we don't need this
-#mousex, mousey = 0,0
-
 # start a thread so that we can later prevent World from changing the list of cells while we interate through it
 Thread = threading.Thread
 
 # starts pygame
 pygame.init()
-
-# i don't think we need this
-#fpsClock = pygame.time.Clock()
 
 # set dimensions of display window
 display_width = 500
@@ -43,7 +31,6 @@ windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 #window title
 pygame.display.set_caption('Nautical Cell Force 2')
 
-
 def convert_to_display_loc(pos):
 	'''change our system of coordinates into coordinates that pygame can understand'''
 	# pos contains a tuple of ( 0.0x, 0.0y)
@@ -51,10 +38,9 @@ def convert_to_display_loc(pos):
 
 def convert_envi_loc(display_loc):
 	''' change pygame coordiantes to the format used by the rest of our program'''
-	return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
+	return display_loc[0]/float(display_width), display_loc[1]/float(display_height)
 
 class Display(Thread):
-        
 	# self -> displayobject cell -> circle, radius -> radius, color
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell
@@ -79,13 +65,7 @@ class Display(Thread):
 		# display all portions of the cell when it's split between two sides
 		for x in x_all:
 			for y in y_all:
-				pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))
-
-# these commented commands will draw hollow cells should we desire to make them hollow
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width), color)
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.1), color)
-#				pygame.gfxdraw.aacircle(windowSurfaceObj, x, y, int(radius*display_width+.2), color)
-				
+				pygame.draw.circle(windowSurfaceObj, color,(x, y), int(radius*display_width))				
 				
 	def run(self):
 		while True:
