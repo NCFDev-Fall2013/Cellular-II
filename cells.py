@@ -51,23 +51,23 @@ class AI:
 	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005):
 		self.div_energy=div_energy
 		self.div_mass=div_mass
-		self.walk_force=walk_force
 		self.mutation_chance=mutation_chance
 		self.density=density
+		self.color=None
 	
 	def mutate_AI(self):
-		self.div_energy=Phenotype.mutate(self.div_energy, 1, 100, 0.1)
-		self.div_mass=Phenotype.mutate(self.div_mass,0,100,.01)
-		self.mutation_chance=Phenotype.mutate(self.mutation_chance,0,100,1)
-		self.density = Phenotype.mutate(self.density,0,10,.001)
+		self.div_energy=mutate(self.div_energy, 0, 100, 0.1)
+		self.div_mass=mutate(self.div_mass,0,100,.01)
+		self.mutation_chance=mutate(self.mutation_chance,0,100,1)
+		self.density = mutate(self.density,0,10,.001)
 
 
 class Static:
 	"""Attributes that take take a set amount of energy"""
 	def __init__(self, walk_force=0.001):
 		self.walk_force=walk_force
-	def mutate_static(self):
-		self.walk_force=Phenotype.mutate(self.walk_force,0,10,.001)
+	def mutate_Static(self):
+		self.walk_force=mutate(self.walk_force,0,10,.001)
 		
 
 class Dynamic:
@@ -76,20 +76,26 @@ class Dynamic:
 		self.emRatio=emRatio
 		self.run_force=run_force
 	def mutate_Dynamic(self):
-		self.emRatio=Phenotype.mutate(self.emRatio,1,100,.1)
-		self.run_force=Phenotype.mutate(self.run_force,0,100,.01)
+		self.emRatio=mutate(self.emRatio,1,100,.1)
+		self.run_force=mutate(self.run_force,0,100,.01)
+
+def mutate(value, lower, upper, maxincrement):
+		variation=random.uniform(-maxincrement,maxincrement)
+		if value+variation >=upper or value+variation<= lower:
+			return mutate(value,lower,upper,maxincrement)
+		else:
+			return value+variation
 
 class Phenotype:
 	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
 		self.AI=AI
 		self.Static=Static
 		self.Dynamic=Dynamic
-	def mutate(value, lower, upper, maxincrement):
-		variation=random.uniform(-maxincrement,maxincrement)
-		if value+variation >=upper or value+variation<= lower:
-			return mutate(value,lower,upper,maxincrement)
-		else:
-			return value+variation 
+
+	def mutate_phenotype(self):
+		self.AI.mutate_AI()
+		self.Static.mutate_Static()
+		self.Dynamic.mutate_Dynamic() 
 	
 
 class Cell:
@@ -107,7 +113,7 @@ class Cell:
 	default_AI=(default_div_energy, default_div_mass, default_randim_walk)
 	default_static=(default_walk_force)
 	"""
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=Phenotype()):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -116,14 +122,14 @@ class Cell:
 
 		# Phenotypes:
 
-		self.phenotype		= Phenotype			# Stored for calc_variance's sake
-		self.emRatio		= Phenotype.Dynamic.emRatio		# Energy/Mass gain ratio
-		self.div_energy		= Phenotype.AI.div_energy		# How much energy a cell needs to divide
-		self.div_mass		= Phenotype.AI.div_mass		# How much mass a cell needs to divide
-		self.walk_force		= Phenotype.Static.walk_force
-		self.density		= Phenotype.AI.density
-		self.mutation_chance	= Phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
-		if Phenotype.AI.color == None: self.color = startColor()
+		self.phenotype		= phenotype			# Stored for calc_variance's sake
+		self.emRatio		= phenotype.Dynamic.emRatio		# Energy/Mass gain ratio
+		self.div_energy		= phenotype.AI.div_energy		# How much energy a cell needs to divide
+		self.div_mass		= phenotype.AI.div_mass		# How much mass a cell needs to divide
+		self.walk_force		= phenotype.Static.walk_force
+		self.density		= phenotype.AI.density
+		self.mutation_chance	= phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
+		if phenotype.AI.color == None: self.color = startColor()
 		else: self.color = genRandomColor(Phenotype.AI.color)
 
 		# Required for motion:
@@ -231,56 +237,13 @@ class Cell:
 		"""Updates radius and sight range according to mass and density"""
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
-
+	
 	def determine_phenotype(self):
-		"""Setting variance for child cell. Called when cell duplicates""" #Currently only color varaince 
-		newphenotype = []
-		##Below code needs to be rewritten##
-		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
+		"""Setting variance for child cell. Called when cell duplicates"""
+		self.phenotype.mutate_phenotype() 
 		
-		# make there be some (large) chance of mutationless division
-		mutation_chance = self.phenotype.mutation_chance
-		if random.uniform(0,100)>mutation_chance:
-			return self.phenotype
-		else:
-			randomvariation = random.uniform(0,.1) 			#Picks a random float between 0 and .001
-			if self.phenotype.emRatio - randomvariation <= 1:   	#If subtracting the value would cause the phenotype to be negative it just adds it
-			    self.phenotype.emRatio += randomvariation
-			else:
-				direction =  random.randint(-1,1)           	#Otherwise, it picks an integer between -1 and 1
+		
 
-				randomvariation = random.uniform(0,.5) 		#Picks a random float between 0 and .005
-			if self.phenotype.emRatio - randomvariation <= 1:  	#If subtracting the value would cause the phenotype to be negative it just adds it
-				self.phenotype.emRatio += randomvariation
-			else:
-				direction =  random.randint(-1,1)           	#Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction   #Then multiplies it by the float
-				self.phenotype.emRatio += randomvariation     	#And adds that value
-			newphenotype.append(self.phenotype.emRatio)
-
-			for t in (self.phenotype.div_Energy,self.phenotype.div_mass, self.phenotype.walk_force):	
-			    randomvariation = random.uniform(0,.1) 		#Picks a random float between 0 and .005
-			    if t - randomvariation <= 0:   			#If subtracting the value would cause the phenotype to be negative it just adds it
-				t += randomvariation
-			    else:
-				direction =  random.randint(-1,1)          	#Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction  	#Then multiplies it by the float
-				t += randomvariation                   		#And adds that value
-			    newphenotype.append(t)
-
-			newphenotype.append(self.color)
-			print "\n"*100
-
-			for t in self.phenotype[4:]:
-			    randomvariation = random.uniform(0,.001)      	#This half does the same thing, but with a larger value
-			    if t - randomvariation <= 0:
-				t += randomvariation
-			    else:
-				direction =  random.randint(-1,1)
-				randomvariaton = randomvariation * direction
-				t += randomvariation
-			    newphenotype.append(t)
-			return newphenotype
 
 	def life_and_death(self):
 		"""Checks if cell mass is great enough for division or low enough to cause death.""" 
@@ -294,8 +257,8 @@ class Cell:
 			#Create child 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype1	= self.determine_phenotype()
-			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
+			self.determine_phenotype()
+			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,self.phenotype))
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
