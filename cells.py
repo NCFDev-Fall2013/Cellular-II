@@ -48,23 +48,26 @@ def genRandomColor(rgbTuple):
 	return tuple(rgbList)
 class AI:
 	"""AI for cell"""
-	def __init__(self, div_energy=0.5, div_mass=0.6, walk_force=0.001, color=None, mutation_chance=30, density=0.005):
+	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005):
 		self.div_energy=div_energy
 		self.div_mass=div_mass
 		self.walk_force=walk_force
-		self.color=color
 		self.mutation_chance=mutation_chance
 		self.density=density
 	def bound(value, upper=False, lower=False)
-	def mutate_genes(self):
+	def mutate_AI(self):
 		self.div_energy=Phenotype.mutate(self.div_energy, 1, 100, 0.1)
-		
+		self.div_mass=Phenotype.mutate(self.div_mass,0,100,.01)
+		self.mutation_chance=Phenotype.mutate(self.mutation_chance,0,100,1)
+		self.density = Phenotype.mutate(self.density,0,10,.001)
 
 
 class Static:
 	"""Attributes that take take a set amount of energy"""
 	def __init__(self, walk_force=0.001):
 		self.walk_force=walk_force
+	def mutate_static(self):
+		self.walk_force=Phenotype.mutate(self.walkforce,0,10,.001)
 		
 
 class Dynamic:
@@ -72,6 +75,9 @@ class Dynamic:
 	def __init__(self, emRatio=2.0, run_force=0.01):
 		self.emRatio=emRatio
 		self.run_force=run_force
+	def mutate_Dynamic(self):
+		self.emRatio=Phenotype.mutate(self.emRatio,1,100,.1)
+		self.run_force=Phenotype.mutate(self.run_force,0,100,.01)
 
 class Phenotype:
 	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
