@@ -6,7 +6,6 @@ from pygame.locals import *
 import pygame, pygame.gfxdraw
 
 #=====Custom Modules=====#
-#from environment import World
 import environment
 from vector import Point as Position
 World = environment.World
