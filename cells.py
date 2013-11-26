@@ -67,7 +67,7 @@ class Static:
 	def __init__(self, walk_force=0.001):
 		self.walk_force=walk_force
 	def mutate_static(self):
-		self.walk_force=Phenotype.mutate(self.walkforce,0,10,.001)
+		self.walk_force=Phenotype.mutate(self.walk_force,0,10,.001)
 		
 
 class Dynamic:
