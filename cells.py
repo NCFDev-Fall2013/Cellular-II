@@ -54,7 +54,7 @@ class AI:
 		self.walk_force=walk_force
 		self.mutation_chance=mutation_chance
 		self.density=density
-	def bound(value, upper=False, lower=False)
+	
 	def mutate_AI(self):
 		self.div_energy=Phenotype.mutate(self.div_energy, 1, 100, 0.1)
 		self.div_mass=Phenotype.mutate(self.div_mass,0,100,.01)
