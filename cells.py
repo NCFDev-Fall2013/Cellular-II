@@ -55,6 +55,10 @@ class AI:
 		self.color=color
 		self.mutation_chance=mutation_chance
 		self.density=density
+	def bound(value, upper=False, lower=False)
+	def mutate_genes(self):
+		self.div_energy=Phenotype.mutate(self.div_energy, 1, 100, 0.1)
+		
 
 
 class Static:
@@ -74,7 +78,13 @@ class Phenotype:
 		self.AI=AI
 		self.Static=Static
 		self.Dynamic=Dynamic
-			
+	def mutate(value, lower, upper, maxincrement):
+		variation=random.uniform(-maxincrement,maxincrement)
+		if value+variation >=upper or value+variation<= lower:
+			return mutate(value,lower,upper,maxincrement)
+		else:
+			return value+variation 
+	
 
 class Cell:
 	"""
