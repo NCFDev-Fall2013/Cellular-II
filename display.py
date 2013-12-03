@@ -3,6 +3,7 @@ from virus import Virus
 from pygame.locals import *
 import pygame.gfxdraw
 import getItIn
+import galaxy
 
 # Create a position class so we can add food via a mouse click
 # i guess i should import vector or something, but I did this instead
@@ -55,7 +56,7 @@ class Display(Thread):
                 self.running = False
                 myfont = pygame.font.SysFont("Times New Roman", 12)
                 self.inbox = getItIn.Innie(50,50,windowSurfaceObj,3, myfont)
-                
+                self.ship = galaxy.Galaxy()                
 
         # self -> displayobject cell -> circle, radius -> radius, color
         def draw_wrapping_square(self, square, radius, color):

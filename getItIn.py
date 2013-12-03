@@ -7,10 +7,10 @@ class Innie(object):
         self.x = x
         self.y = y
         self.surf = surface
-        rect = pygame.Rect(int(surface.get_width()/2), int(surface.get_height()/2), int(surface.get_width()/3), int(surface.get_height()/5))
+        rect = pygame.Rect(int(surface.get_width()/2), int(surface.get_height()/2), int(surface.get_width()/2), int(surface.get_height()/5))
         self.bound = rect
         self.scribe = self.bound.copy()
-        self.scribe.inflate_ip(x-1, y-1)
+        #self.scribe.inflate_ip(x+0.1, y-0.1)
         self.stop = maxChars
         self.font = font
         self.value = ''
@@ -22,23 +22,29 @@ class Innie(object):
     def upSelf(self,event):
         print "value is " + self.value
         pygame.draw.rect(self.surf,(0,0,255),self.bound, 5)
-        pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
+        #pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
         self.surf.blit(self.font.render(self.value, True, (255,0,0)),(self.x,self.y))
         self.upText(event)
 
     def selfUpped(self, event):
         print "value is " + self.value
-        pygame.draw.rect(self.surf,(0,0,255),self.bound, 5)
-        pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
         oldVal = self.value
         self.upText(event)
-        boo = self.font.render(self.value, True, (255,0,0))
+        boo = pygame.Surface((int(self.bound.width),int(self.bound.height)))
+        boo.fill((0,0,0))
+        boo2 = self.font.render(self.value, True, (255,0,0))
+        #boo2 = pygame.Surface((int(self.bound.width),int(self.bound.height)))
+        #boo2.fill((0,0,255))
+        #boo3 = pygame.Surface((int(self.scribe.width),int(self.scribe.height)))
+        #boo3.fill((0,0,0))
+        boo.blit(boo2,(0,0))
+        #boo.blit(boo3,(int(self.surf.get_width()/2), int(self.surf.get_height()/2)))
+        #pygame.draw.rect(self.surf,(0,0,255),self.scribe, 5)
+        #pygame.draw.rect(self.surf,(0,0,0),self.bound, 0)
         if oldVal != self.value:
             self.updateBool = True
         return boo
-
  
-        
     def upText(self,event):
         """ Update the input based on passed events """
         print "event is ", event
