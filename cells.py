@@ -46,20 +46,33 @@ def genRandomColor(rgbTuple):
 	#makes sure color is valid
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
+
+class Phenotype:
+	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
+		self.AI=AI
+		self.Static=Static
+		self.Dynamic=Dynamic
+
+	def mutate_phenotype(self):
+		self.AI.mutate_AI()
+		self.Static.mutate_Static()
+
 class AI:
 	"""AI for cell"""
-	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005):
+	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005, emRatio=2.0,):
 		self.div_energy=div_energy
 		self.div_mass=div_mass
 		self.mutation_chance=mutation_chance
 		self.density=density
 		self.color=None
+		self.emRatio=emRatio
 	
 	def mutate_AI(self):
 		self.div_energy=mutate(self.div_energy, 0, 100, 0.1)
 		self.div_mass=mutate(self.div_mass,0,100,.01)
 		self.mutation_chance=mutate(self.mutation_chance,0,100,1)
 		self.density = mutate(self.density,0,10,.001)
+		self.emRatio=mutate(self.emRatio,1,100,.1)
 
 
 class Static:
@@ -72,11 +85,9 @@ class Static:
 
 class Dynamic:
 	"""Attributes that take a percentage base of energy"""
-	def __init__(self, emRatio=2.0, run_force=0.01):
-		self.emRatio=emRatio
+	def __init__(self, run_force=0.01):
 		self.run_force=run_force
 	def mutate_Dynamic(self):
-		self.emRatio=mutate(self.emRatio,1,100,.1)
 		self.run_force=mutate(self.run_force,0,100,.01)
 
 def mutate(value, lower, upper, maxincrement):
@@ -86,34 +97,8 @@ def mutate(value, lower, upper, maxincrement):
 		else:
 			return value+variation
 
-class Phenotype:
-	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
-		self.AI=AI
-		self.Static=Static
-		self.Dynamic=Dynamic
-
-	def mutate_phenotype(self):
-		self.AI.mutate_AI()
-		self.Static.mutate_Static()
-		self.Dynamic.mutate_Dynamic() 
-	
-
 class Cell:
-	"""
-	default_emRatio = 2.0
-	default_random_walk=1.0
-	default_div_energy = 0.5
-	default_div_mass = 0.6
-	default_color = None
-	default_walk_force = 0.001
-	default_run_force=0.01
-	default_density = 0.005
-	default_mutation_chance = 30
-	
-	default_AI=(default_div_energy, default_div_mass, default_randim_walk)
-	default_static=(default_walk_force)
-	"""
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, phenotype=Phenotype()):
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -122,14 +107,14 @@ class Cell:
 
 		# Phenotypes:
 
-		self.phenotype		= phenotype			# Stored for calc_variance's sake
-		self.emRatio		= phenotype.Dynamic.emRatio		# Energy/Mass gain ratio
-		self.div_energy		= phenotype.AI.div_energy		# How much energy a cell needs to divide
-		self.div_mass		= phenotype.AI.div_mass		# How much mass a cell needs to divide
-		self.walk_force		= phenotype.Static.walk_force
-		self.density		= phenotype.AI.density
-		self.mutation_chance	= phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
-		if phenotype.AI.color == None: self.color = startColor()
+		self.phenotype		= inherited_phenotype		# Stored for calc_variance's sake
+		self.emRatio		= inherited_phenotype.AI.emRatio	# Energy/Mass gain ratio
+		self.div_energy		= self.phenotype.AI.div_energy	# How much energy a cell needs to divide
+		self.div_mass		= self.phenotype.AI.div_mass		# How much mass a cell needs to divide
+		self.walk_force		= self.phenotype.Static.walk_force
+		self.density		= self.phenotype.AI.density
+		self.mutation_chance	= self.phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
+		if self.phenotype.AI.color == None: self.color = startColor()
 		else: self.color = genRandomColor(Phenotype.AI.color)
 
 		# Required for motion:
@@ -263,8 +248,8 @@ class Cell:
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype2	= self.determine_phenotype()
-			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
+			self.determine_phenotype()
+			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,self.phenotype))
 						
 			#Instantiates children at slightly different positions
 			environment.Environment().remove_cell(self)
