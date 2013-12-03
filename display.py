@@ -53,10 +53,10 @@ class Display(Thread):
                 self.environment = environment
                 self.onStart = True
                 self.running = False
-                myfont = pygame.font.SysFont("Times New Roman", 32)
-                self.inbox = getItIn.Innie(display_width/2,display_height/2,windowSurfaceObj,3, myfont)
+                myfont = pygame.font.SysFont("Times New Roman", 24)
+                self.inbox = getItIn.Innie(display_width/2,display_height/2, 48, 24,windowSurfaceObj,3, myfont)
+                self.outbox = getItIn.Innie(display_width/2,display_height/2 + 96, 48, 24,windowSurfaceObj,3, myfont)
                 
-
         # self -> displayobject cell -> circle, radius -> radius, color
         def draw_wrapping_square(self, square, radius, color):
                 real_x, real_y = convert_to_display_loc(square.pos)
@@ -126,7 +126,11 @@ class Display(Thread):
                 imgClone = self.menImg.copy()
                 
                 for event in pygame.event.get():
+                                imgClone.blit(self.inbox.drawBounds(), (self.inbox.x,self.inbox.y))
                                 imgClone.blit(self.inbox.selfUpped(event),(self.inbox.x,self.inbox.y))
+                                imgClone.blit(self.outbox.drawBounds(), (self.outbox.x,self.outbox.y))
+                                imgClone.blit(self.outbox.putText("POO"), (self.outbox.x,self.outbox.y))
+                                
                                 #self.inbox.upSelf(event)        
                                 if event.type ==QUIT:
                                         pygame.quit()
@@ -143,7 +147,7 @@ class Display(Thread):
                 if self.inbox.updateBool:
                         windowSurfaceObj.blit(imgClone,self.menImgRect)
                         self.inbox.updateBool = False
-                pygame.display.flip()
+                        pygame.display.flip()
 
         def run(self):
                 self.menImg = pygame.image.load("images.jpeg")

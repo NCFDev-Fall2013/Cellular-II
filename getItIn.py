@@ -3,40 +3,47 @@ from pygame.locals import *
 
 class Innie(object):
 
-    def __init__(self, x, y, surface, maxChars, font):
+    def __init__(self, x, y, width, height, surface, maxChars, font):
         self.x = x
         self.y = y
         self.surf = surface
-        rect = pygame.Rect(int(surface.get_width()/2), int(surface.get_height()/2), int(surface.get_width()/3), int(surface.get_height()/5))
+        rect = pygame.Surface((int(width),int(height)))
         self.bound = rect
         self.scribe = self.bound.copy()
-        self.scribe.inflate_ip(x-1, y-1)
+        #self.scribe.inflate_ip(x-1, y-1)
         self.stop = maxChars
         self.font = font
         self.value = ''
-        self.boogie = pygame.Surface((self.scribe.width,self.scribe.height))
+        #self.boogie = pygame.Surface((self.scribe.width,self.scribe.height))
         self.shifted = False
         self.restricted = ('1','2','3','4','5','6','7','8','9','0')
-        self.updateBool = False
+        self.updateBool = True
         
-    def upSelf(self,event):
+    """def upSelf(self,event):
         print "value is " + self.value
         pygame.draw.rect(self.surf,(0,0,255),self.bound, 5)
         pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
         self.surf.blit(self.font.render(self.value, True, (255,0,0)),(self.x,self.y))
-        self.upText(event)
+        self.upText(event)"""
 
+    def drawBounds(self):
+        return self.bound
+        
     def selfUpped(self, event):
         print "value is " + self.value
-        pygame.draw.rect(self.surf,(0,0,255),self.bound, 5)
-        pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
+        #pygame.draw.rect(self.surf,(0,0,255),self.bound, 5)
+        #pygame.draw.rect(self.surf,(0,0,0),self.scribe, 0)
         oldVal = self.value
         self.upText(event)
         boo = self.font.render(self.value, True, (255,0,0))
         if oldVal != self.value:
             self.updateBool = True
         return boo
-        
+
+    def putText(self,val):
+        boo = self.font.render(val,True,(255,0,0))
+        return boo
+            
     def upText(self,event):
         """ Update the input based on passed events """
         print "event is ", event
