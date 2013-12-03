@@ -62,8 +62,8 @@ def main():
 			sys.exit()
 
 #		Terminal output	
-		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', environment.Environment().resistance
+#		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+#		print 'Resistance: ', environment.Environment().resistance
 
 #					###----------Obsolete Code----------###
 #		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
