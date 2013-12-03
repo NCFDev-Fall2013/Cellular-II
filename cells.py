@@ -9,6 +9,13 @@ def call(a, f):
 	"""Richard's Black Magic - Called within __init__"""
 	return f(a)
 	
+def randExponent(curve,maximum):
+    x=random.randint(0,maximum*100.0)/100.0
+    base=(((maximum+curve)/curve))**(1.0/maximum)
+    y=curve*(base**x)-curve
+    #print 'plot '+str(curve)+'*('+str(base)+'**x)-('+str(curve)+')'
+    return y
+
 def startColor():
 	"""Gives parent cell initial color from text file"""
 	global colors
