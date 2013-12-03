@@ -43,6 +43,9 @@ class Innie(object):
     def putText(self,val):
         boo = self.font.render(val,True,(255,0,0))
         return boo
+
+    def enterText(self):
+        
             
     def upText(self,event):
         """ Update the input based on passed events """
