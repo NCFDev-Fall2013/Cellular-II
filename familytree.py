@@ -1,4 +1,4 @@
-
+"""
 #====Built-in Modules====#
 import sys, threading, random
 
@@ -22,3 +22,4 @@ class Window(Thread):
                 while True:
                         # Clean slate!
                         window_object.fill((255,255,255))
+"""
