@@ -53,8 +53,8 @@ class Display(Thread):
                 self.environment = environment
                 self.onStart = True
                 self.running = False
-                myfont = pygame.font.SysFont("Times New Roman", 12)
-                self.inbox = getItIn.Innie(50,50,windowSurfaceObj,3, myfont)
+                myfont = pygame.font.SysFont("Times New Roman", 32)
+                self.inbox = getItIn.Innie(display_width/2,display_height/2,windowSurfaceObj,3, myfont)
                 
 
         # self -> displayobject cell -> circle, radius -> radius, color

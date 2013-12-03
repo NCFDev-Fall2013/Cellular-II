@@ -36,8 +36,6 @@ class Innie(object):
         if oldVal != self.value:
             self.updateBool = True
         return boo
-
- 
         
     def upText(self,event):
         """ Update the input based on passed events """
