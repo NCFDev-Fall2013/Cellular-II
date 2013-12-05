@@ -118,8 +118,14 @@ class Cell(object):
 		self.vel = Vector(x_vel, y_vel)
 		self.acl = Vector(0.0, 0.0)
 
-		# Phenotypes:
+                # Brad's Satisfaction
+                self.keyList = []
+                for i in range(0,9):
+                        self.keyList.append([])
+                        for j in range (0,9):
+                                self.keyList[i].append(False)
 
+		# Phenotypes:
 		self.phenotype		= inherited_phenotype		# Stored for calc_variance's sake
 		self.emRatio		= inherited_phenotype.AI.emRatio	# Energy/Mass gain ratio
 		self.div_energy		= self.phenotype.AI.div_energy	# How much energy a cell needs to divide
