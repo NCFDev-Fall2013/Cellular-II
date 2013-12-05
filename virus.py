@@ -3,7 +3,7 @@ import unittest, environment, random, math, weakref, random, globals
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
-
+World = environment.World
 #Virus is a subclass of Cell
 class Virus(Cell):
     
@@ -148,8 +148,9 @@ class Virus(Cell):
     def life_and_death(self):
         self.lifeSpan -= 1 #they just die after a time
         if self.lifeSpan <= 0:
-            environment.Environment().kill_cell(self)
-
+            #environment.Environment().kill_cell(self)
+            World.kill_cell(self)
+            
     #overwrite one_tick
     def one_tick(self):
         print "virus be tickin"
@@ -164,11 +165,11 @@ class Virus(Cell):
         if random.random() <= chance:
             clone = InfectedCell(foe.pos.x, foe.pos.y, foe, self) #make a clone
             if not isinstance(foe, Virus) and not isinstance(foe, InfectedCell): #don't infect viruses or already infected cells
-                if foe in environment.Environment().cell_list: #some issues occured with the Cell_List - this fixes it
-                    environment.Environment().remove_cell(foe) #remove old cell
-                environment.Environment().add_specific_cell_at_location(clone, clone.pos) #add the infected
+                if foe in World.cell_list: #some issues occured with the Cell_List - this fixes it
+                    World.remove_cell(foe) #remove old cell
+                environment.add_specific_cell_at_location(clone, clone.pos) #add the infected
         if foe.guessedKey(self.key): #if the foe correctly guessed the virus' key
-            environment.Environment().kill_cell(self) #kill that virus!
+            World.kill_cell(self) #kill that virus!
         #GUESSKEY NEEDS TO BE MOVED TO ABOVE THE INFECTION
             
 class InfectedCell(Cell):
@@ -211,8 +212,8 @@ class InfectedCell(Cell):
             else:
                 self.mass -= self.timeToDie
                 if self.mass <= 0.1:
-                    environment.Environment().add_viruses_at_loc(self.dispersionCount,self.killer.pos)
-                    environment.Environment().kill_cell(self)
+                    environment.add_viruses_at_loc(self.dispersionCount,self.killer.pos)
+                    World.kill_cell(self)
                     passer = self.keyForChildren - (self.keyForChildren % 10)
                     self.killer.keyGen(passer)                          
         

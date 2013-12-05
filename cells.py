@@ -1,7 +1,14 @@
-import unittest, environment, random, math, weakref, random, globals
-from vector import Vector, Point
+#====Built-in Modules====#
 from functools import partial
 from operator import itemgetter, attrgetter
+import random, math, weakref
+
+#=====Custom Modules=====#
+#from environment import World
+import environment
+World = environment.World
+from vector import Vector, Point
+import globals
 
 colors = globals.colorList()
 
@@ -106,7 +113,7 @@ class Cell(object):
 
 	def task_finding_food(self):
 		#closest piece of food
-		close_food = environment.Environment().food_at(self.pos, self.sight_range)
+		close_food = World.food_at(self.pos, self.sight_range)
 		#If there is any food within distance self.sight_range, get the closest one.
 		if len(close_food) > 0:
 			closest_food = min(close_food, key = partial(reduce, call, (attrgetter("pos"), attrgetter("distance_to"), partial(call, self.pos))))# food: self.pos.distance_to(food.pos))
@@ -115,8 +122,8 @@ class Cell(object):
 		if len(close_food) == 0:
 			"""What the cell does should it be looking for food."""
 			#If you can't see food, accelerate in a random direction.
-			x = random.uniform(0, environment.Environment().width)
-			y = random.uniform(0, environment.Environment().height)
+			x = random.uniform(0, World.width)
+			y = random.uniform(0, World.height)
 			self.destination = Point(x, y)
 			self.destination_type  = "Exploration"
 			self.calc_force()
@@ -136,35 +143,24 @@ class Cell(object):
 
 	def task_getting_food(self):
 		"""What the cell does when it has found food and is attempting to get it."""
-		#assert(len(environment.Environment().food_at(self.destination, 0)) != 0)
 		distance_to_destination = self.pos.distance_to(self.destination)
-		#print self.destination
-		#print distance_to_destination
 		if distance_to_destination > self.distance_to_start_slowing_down():
 			self.calc_force()
 		
-		for f in environment.Environment().food_at(self.pos, self.radius):
+		for f in World.food_at(self.pos, self.radius):
 			self.eat(f)
-		#if distance_to_destination <= self.radius:
-		#	self.eat(self.food_target())
 
 	def update_coords(self):
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		prev_vel = Vector(self.vel.x, self.vel.y)
-		
 		self.pos += self.vel
 		self.vel += self.acl
-		#acl is change in velocity
-		#displacement = (prev_vel + self.exerted_force/self.mass/2)
-		#self.energy -= self.exerted_force*displacement
-		#self.energy -= self.exerted_force*prev_vel
-		self.acl = self.exerted_force - self.vel*abs(self.vel)*environment.Environment().resistance*(self.radius)/self.mass
+		self.acl = self.exerted_force - self.vel*abs(self.vel)*World.resistance*(self.radius)/self.mass
 		self.exerted_force = Vector(0.0,0.0)
 
 	def calc_force(self):
 		"""Cells calculate how much force they are exerting (prior to resistance)."""
 		self.exerted_force = (self.destination - self.pos)*self.walk_force / abs(self.destination - self.pos)
-		#self.exerted_force = (self.destination - self.pos)*self.walk_force / (abs(self.destination - self.pos)*self.mass)
 		if self.energy > self.walk_force:
 			self.energy -= self.walk_force*1.0
 		else:
@@ -173,14 +169,13 @@ class Cell(object):
 	def distance_to_start_slowing_down(self):
 		"""Calculates the distance from the destination that, once past,
 		the cell ought to begin slowing down to reach its destination."""
-		return (abs(self.vel) * self.mass) / (environment.Environment().resistance * self.radius)
+		return (abs(self.vel) * self.mass) / (World.resistance * self.radius)
 
 	def eat(self, f):
 		"""Updates energy and mass according to set emRatio value and removes food item."""
-		#for f in environment.Environment().food_at(self.pos, self.radius):
 		self.energy += f.energy/self.emRatio
 		self.mass += f.energy - (f.energy/self.emRatio)
-		environment.Environment().remove_food(f)
+		World.remove_food(f)
 		#The above line automatically resets our task and destination by calling stop_getting_food()
 
 	def weight_management(self):
@@ -225,7 +220,6 @@ class Cell(object):
 			    newphenotype.append(t)
 
 			newphenotype.append(self.color)
-			#print "\n"*100
 
 			for t in self.phenotype[4:]:
 			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
@@ -251,19 +245,19 @@ class Cell(object):
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype1	= self.determine_phenotype()
-			environment.Environment().cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
+			World.cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
 			newPhenotype2	= self.determine_phenotype()
-			environment.Environment().cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
+			World.cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
 						
 			#Instantiates children at slightly different positions
-			environment.Environment().remove_cell(self)
+			World.remove_cell(self)
 		#Kills cell
 		elif self.mass <= 0.1:
-                        environment.Environment().kill_cell(self)
+                        World.kill_cell(self)
 
         		
 	def one_tick(self):
@@ -272,8 +266,6 @@ class Cell(object):
 		self.update_coords()
 		self.weight_management()
 		self.life_and_death()
-		#cell_col_list = environment.Environment().cell_list
-		#self.collision_detection(cell_col_list, self.x, self.y, self.radius)
                 
         def collideWith(self, foe):
 	#assumed cells are colliding
