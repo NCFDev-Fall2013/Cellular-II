@@ -4,7 +4,6 @@ from operator import itemgetter, attrgetter
 import random, math, weakref
 
 #=====Custom Modules=====#
-#from environment import World
 import environment
 World = environment.World
 from vector import Vector, Point
@@ -16,6 +15,13 @@ def call(a, f):
 	"""Richard's Black Magic - Called within __init__"""
 	return f(a)
 	
+def randExponent(curve,maximum):
+    x=random.randint(0,maximum*100.0)/100.0
+    base=(((maximum+curve)/curve))**(1.0/maximum)
+    y=curve*(base**x)-curve
+    #print 'plot '+str(curve)+'*('+str(base)+'**x)-('+str(curve)+')'
+    return y
+
 def startColor():
 	"""Gives parent cell initial color from text file"""
 	global colors
@@ -54,23 +60,58 @@ def genRandomColor(rgbTuple):
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
 
-class Cell(object):
-	default_emRatio = 2.0
-	default_div_energy = 0.5
-	default_div_mass = 0.6
-	default_color = None
-	default_walk_force = 0.001
-	default_density = 0.005
-	default_mutation_chance = 30
-	default_resistance = 0
+class Phenotype:
+	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
+		self.AI=AI
+		self.Static=Static
+		self.Dynamic=Dynamic
 
-	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
-                self.keyList = []
-                for i in range(0,9):
-                        self.keyList.append([])
-                        for j in range (0,9):
-                                self.keyList[i].append(False)
+	def mutate_phenotype(self):
+		self.AI.mutate_AI()
+		self.Static.mutate_Static()
 
+class AI:
+	"""AI for cell"""
+	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005, emRatio=2.0,):
+		self.div_energy=div_energy
+		self.div_mass=div_mass
+		self.mutation_chance=mutation_chance
+		self.density=density
+		self.color=None
+		self.emRatio=emRatio
+	
+	def mutate_AI(self):
+		self.div_energy=mutate(self.div_energy, 0, 100, 0.1)
+		self.div_mass=mutate(self.div_mass,0,100,.01)
+		self.mutation_chance=mutate(self.mutation_chance,0,100,1)
+		self.density = mutate(self.density,0,10,.001)
+		self.emRatio=mutate(self.emRatio,1,100,.1)
+
+
+class Static:
+	"""Attributes that take take a set amount of energy"""
+	def __init__(self, walk_force=0.001):
+		self.walk_force=walk_force
+	def mutate_Static(self):
+		self.walk_force=mutate(self.walk_force,0,10,.001)
+		
+
+class Dynamic:
+	"""Attributes that take a percentage base of energy"""
+	def __init__(self, run_force=0.01):
+		self.run_force=run_force
+	def mutate_Dynamic(self):
+		self.run_force=mutate(self.run_force,0,100,.01)
+
+def mutate(value, lower, upper, maxincrement):
+		variation=random.uniform(-maxincrement,maxincrement)
+		if value+variation >=upper or value+variation<= lower:
+			return mutate(value,lower,upper,maxincrement)
+		else:
+			return value+variation
+
+class Cell:
+	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -79,15 +120,15 @@ class Cell(object):
 
 		# Phenotypes:
 
-		self.phenotype		= Phenotype		# Stored for calc_variance's sake
-		self.emRatio		= Phenotype[0]		# Energy/Mass gain ratio
-		self.div_energy		= Phenotype[1]		# How much energy a cell needs to divide
-		self.div_mass		= Phenotype[2]		# How much mass a cell needs to divide
-		self.walk_force		= Phenotype[4]
-		self.density		= Phenotype[5]
-		self.mutation_chance	= Phenotype[6] 		# The likelihood of each phenotype mutating
-		if Phenotype[3] == None: self.color = startColor()
-		else: self.color = genRandomColor(Phenotype[3])
+		self.phenotype		= inherited_phenotype		# Stored for calc_variance's sake
+		self.emRatio		= inherited_phenotype.AI.emRatio	# Energy/Mass gain ratio
+		self.div_energy		= self.phenotype.AI.div_energy	# How much energy a cell needs to divide
+		self.div_mass		= self.phenotype.AI.div_mass		# How much mass a cell needs to divide
+		self.walk_force		= self.phenotype.Static.walk_force
+		self.density		= self.phenotype.AI.density
+		self.mutation_chance	= self.phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
+		if self.phenotype.AI.color == None: self.color = startColor()
+		else: self.color = genRandomColor(Phenotype.AI.color)
 
 		# Required for motion:
 		self.energy		= energy
@@ -182,61 +223,15 @@ class Cell(object):
 		"""Updates radius and sight range according to mass and density"""
 		self.radius = ( 3.0*self.mass*self.density / (4.0*math.pi) )**(1/2.0)
 		self.sight_range = .2 + self.radius
-
+	
 	def determine_phenotype(self):
-		"""Setting variance for child cell. Called when cell duplicates""" #Currently only color varaince 
-		newphenotype = []
-		##Below code needs to be rewritten##
-		###SOLUTION: Use fraction of acceptable margin as argument for randint modification###
-		
-		# make there be some (large) chance of mutationless division
-		mutation_chance = self.phenotype[6]
-		if random.uniform(0,100)>mutation_chance:
-			return self.phenotype
-		else:
-			randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .001
-			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
-			    self.phenotype[0] += randomvariation
-			else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-
-				randomvariation = random.uniform(0,.5) #Picks a random float between 0 and .005
-			if self.phenotype[0] - randomvariation <= 1:   #If subtracting the value would cause the phenotype to be negative it just adds it
-				self.phenotype[0] += randomvariation
-			else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction      #Then multiplies it by the float
-				self.phenotype[0] += randomvariation                                              #And adds that value
-			newphenotype.append(self.phenotype[0])
-
-			for t in self.phenotype[1:3]:	
-			    randomvariation = random.uniform(0,.1) #Picks a random float between 0 and .005
-			    if t - randomvariation <= 0:   #If subtracting the value would cause the phenotype to be negative it just adds it
-				t += randomvariation
-			    else:
-				direction =  random.randint(-1,1)           #Otherwise, it picks an integer between -1 and 1
-				randomvariation = randomvariation * direction      #Then multiplies it by the float
-				t += randomvariation                                              #And adds that value
-			    newphenotype.append(t)
-
-			newphenotype.append(self.color)
-
-			for t in self.phenotype[4:]:
-			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
-			    if t - randomvariation <= 0:
-				t += randomvariation
-			    else:
-				direction =  random.randint(-1,1)
-				randomvariaton = randomvariation * direction
-				t += randomvariation
-			    newphenotype.append(t)
-			return newphenotype
+		"""Setting variance for child cell. Called when cell duplicates"""
+		self.phenotype.mutate_phenotype() 
 
 	def life_and_death(self):
 		"""Checks if cell mass is great enough for division or low enough to cause death.""" 
 		"""Brings new cells into existance or removes cell if conditions are true."""
-		if self.mass >= self.div_mass and self.energy >= self.div_energy:
-			##Removed Jack-ese##			
+		if self.mass >= self.div_mass and self.energy >= self.div_energy:		
 			#Statistics for child cells
 			newMass		= self.mass/self.emRatio
 			newEnergy	= (self.energy - 3.0)/self.emRatio
@@ -244,14 +239,14 @@ class Cell(object):
 			#Create child 1
 			x1 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y1 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype1	= self.determine_phenotype()
-			World.cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype1))
+			self.determine_phenotype()
+			World.cell_list.append(Cell(x1,y1,newMass,newEnergy,self.vel.x,self.vel.y,self.phenotype))
 			
 			#Create child 2
 			x2 = random.uniform(self.pos.x-0.01,self.pos.x+0.01)
 			y2 = random.uniform(self.pos.y-0.01,self.pos.y+0.01)
-			newPhenotype2	= self.determine_phenotype()
-			World.cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,newPhenotype2))
+			self.determine_phenotype()
+			World.cell_list.append(Cell(x2,y2,newMass,newEnergy,self.vel.x,self.vel.y,self.phenotype))
 						
 			#Instantiates children at slightly different positions
 			World.remove_cell(self)
@@ -268,22 +263,14 @@ class Cell(object):
 		self.life_and_death()
                 
         def collideWith(self, foe):
-	#assumed cells are colliding
+	"""assumed cells are colliding"""
 	
 	#get distance between cell radii as a vector
 		selfPos = self.pos
 		foePos = foe.pos
-		#selfPos.x = round(selfPos.x,5)
-		#selfPos.y = round(selfPos.y, 5)
-		#foePos.x = round(foePos.x, 5)
-		#foePos.y = round(foePos.y, 5)
 		xDiff = selfPos.x - foePos.x
-		#print "xDiff = ", xDiff
 		yDiff = selfPos.y - foePos.y
-                #print "yDiff = ", yDiff
 		dist = math.sqrt(xDiff**2 + yDiff**2)
-		#dist = round(dist, 5)
-		#print "dist = ", dist
                 dist += 5
 		distVec = Vector(xDiff, yDiff)
 		distVec.x = round(distVec.x,3)
@@ -291,16 +278,13 @@ class Cell(object):
 		unitVec = distVec/dist
 		unitVec.x = round(unitVec.x, 3)
 		unitVec.y = round(unitVec.y, 3)
-		#print "unitvec = ", unitVec
 
 	#make a force vector
 		forcApp = 1/dist
 		forcApp = round(forcApp, 3)
-		#print "forceApp", forcApp
 		forcVec = unitVec * forcApp
 		forcVec.x = round(forcVec.x, 3)
 		forcVec.y = round(forcVec.y, 3)
-		#print "forceVec", forcVec
 
 	#apply the force vector to other cell
 		#the target's acceration is changed
@@ -309,25 +293,4 @@ class Cell(object):
 		targetPushVec = forcVec/foe.mass
 		targetPushVec.x = round(targetPushVec.x, 3)
 		targetPushVec.y = round(targetPushVec.y, 3)
-		
-		#round(targetPushVec.y, 3)
-		#print "targetPushVec = ", targetPushVec
-		#foe.acl.x = round(foe.acl.x, 5)
-		#foe.acl.y = round(foe.acl.y, 5)
-		#foe.vel.x = round(foe.vel.x, 5)
-		#foe.vel.y = round(foe.vel.y, 5)
 		foe.acl += -targetPushVec
-
-        def guessedKey(self, vKey):
-                vKeyO = vKey % 10 #gets the number in the ones place in vKey
-                vKeyT = (vKey - vKeyO)/10 #gets the number in the tens place in vKey
-                if self.keyList[vKeyT][vKeyO] == True : #if the cell already knows the key
-                        return True
-                randN = round(random.random(),2)*100
-                randNO = randN % 10
-                randNT = (randN - randNO)/10
-                #if the guess shares the same tens value and is at least 2 units away from the ones value
-                if vKeyT == randNT and vKeyO < randNT + 2 and vKeyO >= randNT - 2:
-                        self.keyList[randNT][randNO] = True
-                        return True
-                return False #if this is reached, all guesses have failed
