@@ -1,4 +1,4 @@
-import pygame, sys, threading, environment, random, math
+import pygame, sys, threading, environment, random, math, os
 from pygame.locals import *
 import pygame.gfxdraw
 
@@ -36,7 +36,7 @@ fpsClock = pygame.time.Clock()
 # set dimensions of dispnlay window
 world_width = 500
 world_height = 500
-display_width = int(1.3*world_width)
+display_width = int(1.5*world_width)
 display_height = world_height
 
 
@@ -47,21 +47,40 @@ pygame.display.set_caption('Nautical Cell Force 2')
 
 
 #button class
+# the button name is also the name of the function it when clicked
 class Button():
-    button_xlocs = .4*world_width*3
+    button_xlocs = .36*world_width*3
     button_radiuses = .05*display_height
 
-    def __init__(self,name,height,img,onclick):
+    def __init__(self,name,height,img):
         self.name =name
         self.xloc = Button.button_xlocs
         self.yloc = height
         self.image = img
         self.radius = Button.button_radiuses
-        self.onclick = onclick
+
+	# button functions
+    def play_pause(self):
+        for i in xrange(100):
+            print "pause"
+    def submit(self):
+        for i in xrange(100):
+            print "submitting"
+    def add_cells(self):
+        for i in xrange(100):
+            print "add cell"
+    def reset(self):
+        for i in xrange(100):
+            print "reset"
+    def add_food(self):
+        for i in xrange(100):
+            print "add food"
 
     def click(self):
-        self.onclick()
-
+        eval('self.'+self.name+'()')
+ #       print function
+#        eval(self.name+'()')
+  #      eval(function)
 #button_locations
 #play-pause,settings, cell designer, state capture, mouseover/onclick cell stats, cell family tree, display tics per second, choose and customize three color presets
 
@@ -72,29 +91,11 @@ add_cells_button_height = .5*display_height
 add_food_button_height = .3*display_height
 reset_button_height = .1*display_height
 
-# button functions
-def play_pause():
-    pass
-def submit():
-    for i in xrange(100):
-        print "submitting"
-def add_cells():
-    pass
-def reset():
-    pass
-def add_food():
-    pass
-# onclicks
-play_pause_onclick = play_pause
-submit_onclick = submit
-add_cells_onclick = add_cells
-add_food_onclick = add_food
-reset_onclick = reset
 
 buttons = {}
 button_names = ["play_pause","submit","add_cells","add_food","reset"]
 for button_name in button_names:
-    buttons[button_name] = Button(button_name,eval(button_name+"_button_height"),eval(button_name+'_img'), eval(button_name+'_onclick'))
+    buttons[button_name] = Button(button_name,eval(button_name+"_button_height"),eval(button_name+'_img'))
 
 
 
@@ -183,7 +184,11 @@ class Display(Thread):
 
             # draw all the cells
             for cell in self.environment.cell_list:
-                print "",
+                with open(os.devnull, 'w') as blarg:
+                    backup_stdout = sys.stdout
+                    sys.stdout = blarg
+                    print "",
+                sys.stdout = backup_stdout
 				#print cell.color
                 self.draw_wrapping_circle(cell, cell.radius, pygame.Color(*cell.color))
                 # we're no longer going through the cell list, so now allow other parts of this project to change the cell list
@@ -198,20 +203,22 @@ class Display(Thread):
                 elif event.type == MOUSEBUTTONDOWN:
                     if event.button == 1:
                         pos = Position(convert_envi_loc(event.pos))
-                        print "event: ", event.pos[0],event.pos[1]
+                        
+    #                    print "event: ", event.pos[0],event.pos[1]
                         for button in buttons:
-                            print type(button)
-                            print buttons
-                            print button
-                            print "Button:", buttons[button].xloc, buttons[button].yloc
-                            if math.sqrt(((buttons[button].xloc-event.pos[0])**2)+((buttons[button].yloc-event.pos[1])**2)) < 20:
-                                function = buttons[button].onclick
-                                print function
-                                function()
+#                            print type(button)
+ #                           print buttons
+  #                          print button
+   #                         print "Button:", buttons[button].xloc, buttons[button].yloc
+                            if math.sqrt(((buttons[button].xloc-event.pos[0])**2)+((buttons[button].yloc-event.pos[1])**2)) < 30:
+                                buttons[button].click()
                             else:
-                                environment.Environment().add_food_at_location(pos)
+                                if event.pos[0]<world_width and event.pos[1]<world_height:
+                                    print "adding food at", event.pos
+                                    environment.Environment().add_food_at_location(pos)
                     elif event.button == 3:
                         pos = Position(convert_envi_loc(event.pos))
+
                         environment.Environment().add_cell_at_location(pos)
 				
                         # allow user to change resistance
