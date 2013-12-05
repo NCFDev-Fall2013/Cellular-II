@@ -19,7 +19,6 @@ def randExponent(curve,maximum):
     x=random.randint(0,maximum*100.0)/100.0
     base=(((maximum+curve)/curve))**(1.0/maximum)
     y=curve*(base**x)-curve
-    #print 'plot '+str(curve)+'*('+str(base)+'**x)-('+str(curve)+')'
     return y
 
 def startColor():
@@ -109,6 +108,19 @@ class Phenotype(object):
 	def mutate_phenotype(self):
 		self.AI.mutate_AI()
 		self.Static.mutate_Static()
+
+# We need to create a default pheontype
+# This is because when cells are created they are given phenotype objects
+# And these phenotype objects do not seem to be a constant, default value
+# i.e. as the program runs, brand new cells are given mutated phenotypes
+# default_phenotype()
+# Big cells BAD
+# Little cellls BAD
+# we need to make the distance_to_slow_down variable a mutation ( I think)
+# and we need to deincentivize large cells
+# we also may need to fix sight ranges for large cells
+# and we ought to change the bounds for reproductive requirements
+# so cells don't stay forever huge
 
 class Cell(object):
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):

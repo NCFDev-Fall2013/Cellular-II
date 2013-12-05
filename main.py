@@ -42,6 +42,7 @@ def main():
 		starting_food_count = input('Enter starting amount of food: ')
 		starting_cell_count = input('Enter starting amount of cells: ')
                 starting_virus_count = input('Enter starting amount of viruses:')
+
 #	Add the proper number of Cells and Food
 	environment.add_food(starting_food_count)
 	environment.add_cells(starting_cell_count)

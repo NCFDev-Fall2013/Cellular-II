@@ -56,7 +56,7 @@ class Vector(object):
                 return Vector(-self.x, -self.y)
         def __abs__(self):
                 """Magnitude of the vector."""
-                return (self.x**2 + self.y**2)**0.5
+                return round((self.x**2 + self.y**2)**0.5,10)
         def __repr__(self):
                 """Presents the representation of the vector."""
                 return '(' + str(self.x) + ',' + str(self.y) + ')'

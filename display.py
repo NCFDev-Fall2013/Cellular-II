@@ -123,9 +123,7 @@ class Display(Thread):
 
 			# draw all the cells
 			for cell in World.cell_list:
-#                                print "",
 				sys.stderr.write("")
-				#print cell.color
 				if isinstance(cell, Virus):
                                         #draw virus
                                         self.draw_wrapping_square(cell, 5, pygame.Color(*cell.color))
@@ -144,6 +142,9 @@ class Display(Thread):
 					if event.button == 1:
 						pos = Position(convert_envi_loc(event.pos))
 						environment.add_food_at_location(pos)
+					elif event.button == 2:
+						pos = Position(convert_envi_loc(event.pos))
+						environment.add_virus_at_location(pos)
 					elif event.button == 3:
 						pos = Position(convert_envi_loc(event.pos))
 						environment.add_cell_at_location(pos)

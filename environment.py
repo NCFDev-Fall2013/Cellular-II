@@ -1,6 +1,3 @@
-# prevent anyone from running environment.py directly
-if __name__ == "__main__": print 'no'; exit(-1)
-
 #====Built-in Modules====#
 import random, threading, math
 
@@ -34,8 +31,6 @@ class Environment(object):
                 self.lock.acquire()
 
                 # "@_____@"
-
-                #print "ATTEMPTING COLLISION"
                 self.collision_detection(self.cell_list)
                 
                 for cell in self.cell_list:
@@ -73,7 +68,6 @@ class Environment(object):
 
 World = Environment()
 import cells, food, virus
-
 
 def add_food(food_count):
 	"""Add food_count number of foods at random locations"""
