@@ -60,7 +60,7 @@ def genRandomColor(rgbTuple):
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
 
-class AI:
+class AI(object):
 	"""AI for cell"""
 	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005, emRatio=2.0,):
 		self.div_energy=div_energy
@@ -78,7 +78,7 @@ class AI:
 		self.emRatio=mutate(self.emRatio,1,100,.1)
 
 
-class Static:
+class Static(object):
 	"""Attributes that take take a set amount of energy"""
 	def __init__(self, walk_force=0.001):
 		self.walk_force=walk_force
@@ -86,7 +86,7 @@ class Static:
 		self.walk_force=mutate(self.walk_force,0,10,.001)
 		
 
-class Dynamic:
+class Dynamic(object):
 	"""Attributes that take a percentage base of energy"""
 	def __init__(self, run_force=0.01):
 		self.run_force=run_force
@@ -100,7 +100,7 @@ def mutate(value, lower, upper, maxincrement):
         else:
                 return value+variation
 
-class Phenotype:
+class Phenotype(object):
 	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
 		self.AI=AI
 		self.Static=Static
@@ -110,7 +110,7 @@ class Phenotype:
 		self.AI.mutate_AI()
 		self.Static.mutate_Static()
 
-class Cell:
+class Cell(object):
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
