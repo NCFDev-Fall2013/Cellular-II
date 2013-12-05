@@ -1,7 +1,7 @@
 # prevent anyone from running environment.py directly
 if __name__ == "__main__": print 'no'; exit(-1)
 
-import cells, food, random, unittest, singleton, vector, threading, math
+import cells, food, random, unittest, singleton, vector, threading, math, virus
 
 class Environment(singleton.Singleton):
 	def init_once(self, food_count, cells_count, add_food_rate=10, usr_resist=600):
@@ -16,13 +16,48 @@ class Environment(singleton.Singleton):
 		self.reseed_prob = add_food_rate
 		self.resistance = usr_resist
 
+        def add_food(self, food_count):
+		"""Add food_count number of foods at random locations"""
+		for i in range(food_count):
+			self.food_set.add(food.Food(random.uniform(0, self.width), random.uniform(0, self.height)))
+	def add_food_at_location(self, pos):
+		"""Add a food item at location"""
+		self.food_set.add(food.Food(pos.x, pos.y))
+
+	def add_cells(self, cell_count):
+		''' Add cell_count number of cells of random colors at random locations to the world'''
+		for i in range(cell_count):
+			self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
+
+	def add_viruses(self, virus_count):
+		''' Add virus_count number of cells of random colors at random locations to the world'''
+		for i in range(virus_count):
+			self.cell_list.append(virus.Virus(random.uniform(0, self.width), random.uniform(0, self.height)))
+
+        def add_viruses_at_loc(self, virus_count, loc):
+                for i in range(virus_count):
+			self.cell_list.append(virus.Virus(loc.x + .01*random.uniform(0, 1), loc.y + .01*random.uniform(0, 1)))
+	
+        def add_virus(self, pos):
+                self.cell_list.append(virus.Virus(pos.x, pos.y, 1, 1, 4, 4, "on_death_disperse", 50, 2))
+                
+	def add_cell_at_location(self, pos):
+		"""Add a cell at location"""
+		self.cell_list.append(cells.Cell(pos.x, pos.y))
+
+	def add_specific_cell_at_location(self, cell, pos):
+                cell.pos.x = pos.x
+                cell.pos.y = pos.y
+                self.cell_list.append(cell)
+
         def collision_detection(self, cell_list_initial):
                 cell_list_clone = cell_list_initial[:]
-                for cell_A in cell_list_initial:
+                cell_list_doubleClone = cell_list_initial[:]
+                for cell_A in cell_list_doubleClone:
                         cell_list_clone.remove(cell_A)
                         for cell_B in cell_list_clone:
                                if  math.sqrt((cell_B.pos.x - cell_A.pos.x)**2 + (cell_B.pos.y - cell_A.pos.y)**2) <= (cell_B.radius + cell_A.radius):
-                                        print "OMG WE'RE TOUCHING ZOMG"
+                                       # print "OMG WE'RE TOUCHING ZOMG"
 ##                                        cell_A.vel = vector.Vector(0,0)
 ##                                        cell_B.vel = vector.Vector(0,0)
 ##                                        cell_A.acl = vector.Vector(0,0)
@@ -30,29 +65,14 @@ class Environment(singleton.Singleton):
                                         cell_A.collideWith(cell_B)
                                         cell_B.collideWith(cell_A)
                                         
-        def add_food(self, food_count):
-                """Add food_count number of foods at random locations"""
-                for i in range(food_count):
-                        self.food_set.add(food.Food(random.uniform(0, self.width), random.uniform(0, self.height)))
-        def add_food_at_location(self, pos):
-                """Add a food item at location"""
-                self.food_set.add(food.Food(pos.x, pos.y))
-
-        def add_cells(self, cell_count):
-                ''' Add cell_count number of cells of random colors at random locations to the world'''
-                for i in range(cell_count):
-                        self.cell_list.append(cells.Cell(random.uniform(0, self.width), random.uniform(0, self.height)))
-                        
-        def add_cell_at_location(self, pos):
-                """Add a cell at location"""
-                self.cell_list.append(cells.Cell(pos.x, pos.y))
+        
                         
         def tick(self):
                 ''' give each cell a turn and maybe add food to the world'''
                 # we need to lock the cell_list so that we can itterate through it
                 self.lock.acquire()
 
-                print "@_____@"
+                # "@_____@"
                 #print "ATTEMPTING COLLISION"
                 self.collision_detection(self.cell_list)
                 

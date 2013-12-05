@@ -11,6 +11,8 @@ import copy
 import sys
 import display
 import pygame
+import virus
+import random
 #====End of Imports===#
 
 def main():
@@ -29,9 +31,14 @@ def main():
 	elif len(sys.argv) == 3:			#Evaluates for the case: { python Cellular-II.py $2 $3 } (two args)
 		starting_food_count  = int(sys.argv[1])
 		starting_cell_count  = int(sys.argv[2])
+	elif len(sys.argv) == 4:
+                starting_food_count = int(sys.argv[1])
+                starting_cell_count = int(sys.argv[2])
+                starting_virus_count = int(sys.argv[3])
 	else:						#Evaluates for the case { python Cellular-II.py } (no args) unexpected number of args
 		starting_food_count = input('Enter starting amount of food: ')
 		starting_cell_count = input('Enter starting amount of cells: ')
+		starting_virus_count = input('Enter starting amount of viruses:')
 ##		continue_passing_args = raw_input('Do you want to modify other things? y/n  ')
 ##		if continue_passing_args == "y":
 ##			sim_speed = input('Enter simulation speed (60 = fast, 15 = slow): ')            #Controls simulation speed
@@ -45,7 +52,7 @@ def main():
 
 #	Initialize World Object	
 	World = environment.Environment(starting_food_count,starting_cell_count)
-	
+        World.add_viruses(starting_virus_count)
 # 	Where dis is a thread 
 	dis = display.display(World)
 
@@ -62,8 +69,8 @@ def main():
 			sys.exit()
 
 #		Terminal output	
-		print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
-		print 'Resistance: ', environment.Environment().resistance
+		#print 'Tick:',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)
+		#print 'Resistance: ', environment.Environment().resistance
 
 #					###----------Obsolete Code----------###
 #		#print 'Tick: ',i,'\t\tfood: ',len(World.food_set),'\t\tcells: ',len(World.cell_list)

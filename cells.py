@@ -47,7 +47,7 @@ def genRandomColor(rgbTuple):
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
 
-class Cell:
+class Cell(object):
 	default_emRatio = 2.0
 	default_div_energy = 0.5
 	default_div_mass = 0.6
@@ -55,8 +55,15 @@ class Cell:
 	default_walk_force = 0.001
 	default_density = 0.005
 	default_mutation_chance = 30
+	default_resistance = 0
 
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, Phenotype=[default_emRatio, default_div_energy, default_div_mass, default_color, default_walk_force, default_density , default_mutation_chance]):
+                self.keyList = []
+                for i in range(0,9):
+                        self.keyList.append([])
+                        for j in range (0,9):
+                                self.keyList[i].append(False)
+
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
 		self.pos = Point(float(x), float(y))
@@ -218,7 +225,7 @@ class Cell:
 			    newphenotype.append(t)
 
 			newphenotype.append(self.color)
-			print "\n"*100
+			#print "\n"*100
 
 			for t in self.phenotype[4:]:
 			    randomvariation = random.uniform(0,.001)      #This half does the same thing, but with a larger value
@@ -318,3 +325,17 @@ class Cell:
 		#foe.vel.x = round(foe.vel.x, 5)
 		#foe.vel.y = round(foe.vel.y, 5)
 		foe.acl += -targetPushVec
+
+        def guessedKey(self, vKey):
+                vKeyO = vKey % 10 #gets the number in the ones place in vKey
+                vKeyT = (vKey - vKeyO)/10 #gets the number in the tens place in vKey
+                if self.keyList[vKeyT][vKeyO] == True : #if the cell already knows the key
+                        return True
+                randN = round(random.random(),2)*100
+                randNO = randN % 10
+                randNT = (randN - randNO)/10
+                #if the guess shares the same tens value and is at least 2 units away from the ones value
+                if vKeyT == randNT and vKeyO < randNT + 2 and vKeyO >= randNT - 2:
+                        self.keyList[randNT][randNO] = True
+                        return True
+                return False #if this is reached, all guesses have failed
