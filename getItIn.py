@@ -45,6 +45,7 @@ class Innie(object):
         return boo
 
     def enterText(self):
+        return self.value
         
             
     def upText(self,event):

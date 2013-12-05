@@ -1,0 +1,7 @@
+Okay, so getItIn.py is the file you need to create text boxes.
+
+The textboxes aren't actually surfaces, so you're not really 
+blitting the Innie object or anything. The Innie object is just
+a device which weaves together input and output with the (limited) rendering capabilities of pygame. 
+
+
