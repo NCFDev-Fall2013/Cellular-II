@@ -263,7 +263,7 @@ class Cell:
 		self.life_and_death()
                 
         def collideWith(self, foe):
-	"""assumed cells are colliding"""
+                """assumed cells are colliding"""
 	
 	#get distance between cell radii as a vector
 		selfPos = self.pos
