@@ -60,16 +60,6 @@ def genRandomColor(rgbTuple):
 	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
 	return tuple(rgbList)
 
-class Phenotype:
-	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
-		self.AI=AI
-		self.Static=Static
-		self.Dynamic=Dynamic
-
-	def mutate_phenotype(self):
-		self.AI.mutate_AI()
-		self.Static.mutate_Static()
-
 class AI:
 	"""AI for cell"""
 	def __init__(self, div_energy=0.5, div_mass=0.6, mutation_chance=30, density=0.005, emRatio=2.0,):
@@ -104,11 +94,21 @@ class Dynamic:
 		self.run_force=mutate(self.run_force,0,100,.01)
 
 def mutate(value, lower, upper, maxincrement):
-		variation=random.uniform(-maxincrement,maxincrement)
-		if value+variation >=upper or value+variation<= lower:
-			return mutate(value,lower,upper,maxincrement)
-		else:
-			return value+variation
+        variation=random.uniform(-maxincrement,maxincrement)
+        if value+variation >=upper or value+variation<= lower:
+                return mutate(value,lower,upper,maxincrement)
+        else:
+                return value+variation
+
+class Phenotype:
+	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
+		self.AI=AI
+		self.Static=Static
+		self.Dynamic=Dynamic
+
+	def mutate_phenotype(self):
+		self.AI.mutate_AI()
+		self.Static.mutate_Static()
 
 class Cell:
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):
