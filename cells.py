@@ -294,3 +294,17 @@ class Cell(object):
 		targetPushVec.x = round(targetPushVec.x, 3)
 		targetPushVec.y = round(targetPushVec.y, 3)
 		foe.acl += -targetPushVec
+
+         def guessedKey(self, vKey):
+                 vKeyO = vKey % 10 #gets the number in the ones place in vKey
+                 vKeyT = (vKey - vKeyO)/10 #gets the number in the tens place in vKey
+                 if self.keyList[vKeyT][vKeyO] == True : #if the cell already knows the key
+                         return True
+                 randN = round(random.random(),2)*100
+                 randNO = randN % 10
+                 randNT = (randN - randNO)/10
+                 #if the guess shares the same tens value and is at least 2 units away from the ones value
+                 if vKeyT == randNT and vKeyO < randNT + 2 and vKeyO >= randNT - 2:
+                         self.keyList[randNT][randNO] = True
+                         return True
+                 return False #if this is reached, all guesses have failed
