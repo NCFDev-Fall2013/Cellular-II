@@ -91,7 +91,7 @@ def add_viruses(virus_count):
         for i in range(virus_count):
                 World.cell_list.append(virus.Virus(random.uniform(0, World.width), random.uniform(0, World.height)))
 
-def add_viruses_at_loc(virus_count, loc):
+def add_viruses_at_location(virus_count, loc):
         for i in range(virus_count):
                 World.cell_list.append(virus.Virus(loc.x + .01*random.uniform(0, 1), loc.y + .01*random.uniform(0, 1)))
 
