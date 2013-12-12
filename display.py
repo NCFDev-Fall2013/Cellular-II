@@ -69,18 +69,27 @@ class Button():
 
         # button functions
     def play_pause(self):
+        if Display.running_bool == True: Display.running_bool = False
+        else: Display.running_bool = True
         for i in xrange(100):
             print "pause"
     def submit(self):
+        environment.add_viruses(1)
         for i in xrange(100):
             print "submitting"
     def add_cells(self):
+        environment.add_cells(1)
         for i in xrange(100):
             print "add cell"
+            
     def reset(self):
+        dupe = World.cell_list[:]
+        for cell in dupe:
+                World.remove_cell(cell)
         for i in xrange(100):
             print "reset"
     def add_food(self):
+        environment.add_food(1)
         for i in xrange(100):
 		print "add food"
     def click(self):
@@ -127,7 +136,10 @@ def convert_envi_loc(display_loc):
         ''' change pygame coordiantes to the format used by the rest of our program'''
         return display_loc[0]/float(world_width),display_loc[1]/float(world_height)
 
-class Display(Thread):      
+class Display(Thread):
+
+        running_bool = True
+                
 	# self -> displayobject cell -> circle, radius -> radius, color
 	def draw_wrapping_circle(self, circle, radius, color):
 		# self is a display object, circle is a cell, radius and color are attributes of that cell

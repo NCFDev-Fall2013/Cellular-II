@@ -212,7 +212,7 @@ class InfectedCell(Cell):
             else:
                 self.mass -= self.timeToDie
                 if self.mass <= 0.1:
-                    environment.add_virus_at_location(self.dispersionCount,self.killer.pos)
+                    environment.add_viruses_at_location(self.dispersionCount,self.killer.pos)
                     World.kill_cell(self)
                     passer = self.keyForChildren - (self.keyForChildren % 10)
                     self.killer.keyGen(passer)                          
