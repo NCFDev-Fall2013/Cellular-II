@@ -27,7 +27,7 @@ class Colors():
 
 	def genColor(self):
 		if len(self.colorList) is 0: self.genColorList()
-		pos = random.randint(0,(len(colors)-1))
+		pos = random.randint(0,(len(self.colorList)-1))
 		return self.colorList.pop(pos)
 
 class AI(object):
