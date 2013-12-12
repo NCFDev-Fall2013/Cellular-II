@@ -25,7 +25,7 @@ class Colors():
 		if section is 2: self.colorList = settings.getValue('COLORS','user2',3)
 		if section is 3: self.colorList = settings.getValue('COLORS','user3',3)
 
-	def getColor(self):
+	def genColor(self):
 		if len(self.colorList) is 0: self.genColorList()
 		pos = random.randint(0,(len(colors)-1))
 		return colors.pop(pos)
