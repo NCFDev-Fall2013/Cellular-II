@@ -55,19 +55,24 @@ def genRandomColor(rgbTuple):
 	return tuple(rgbList)
 
 class Phenotype:
-	def __init__(self, AI=False, Static=False, Dynamic=False):
-		if not AI:		
+	def __init__(self, _AI=None, _Static=None, _Dynamic=None):
+		if not _AI:		
 			self.AI=AI()
+
 		else:
-			self.AI=AI
-		if not Static:
+			self.AI=_AI
+
+		if not _Static: 
 			self.Static=Static()
-		else:
-			self.Static=Static
-		if not Dynamic:
+
+		else:	
+			self.Static=_Static
+
+		if not _Dynamic:
 			self.Dynamic=Dynamic()
+
 		else:
-			self.Dynamic=Dynamic
+			self.Dynamic=_Dynamic
 
 	def mutate_phenotype(self):
 		self.AI.mutate_AI()
