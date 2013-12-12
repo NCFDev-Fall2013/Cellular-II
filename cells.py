@@ -28,7 +28,7 @@ class Colors():
 	def genColor(self):
 		if len(self.colorList) is 0: self.genColorList()
 		pos = random.randint(0,(len(colors)-1))
-		return colors.pop(pos)
+		return self.colorList.pop(pos)
 
 class AI(object):
 	"""AI for cell"""
