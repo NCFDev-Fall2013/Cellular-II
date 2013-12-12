@@ -59,15 +59,16 @@ def main():
 
 #						###MAIN LOOP BEGIN###
 	while True:
-		i += 1
-#		If the user closes pygame, close the rest of the program
-		if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
-			sys.exit()
+                while dis.running_bool:
+                        i += 1
+        #		If the user closes pygame, close the rest of the program
+                        if dis.isAlive() == False:		#If thread is stopped, isAlive() evaluates False
+                                sys.exit()
 
-#		Terminal output	
+        #		Terminal output	
 
-		(worldClock.tick(60) + 0.00000000001)
-		World.tick()
+                        (worldClock.tick(60) + 0.00000000001)
+                        World.tick()
 #						###MAIN LOOP END###
 
 # 	Closes the graphics thread if the main loop is broken
