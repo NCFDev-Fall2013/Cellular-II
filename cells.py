@@ -21,7 +21,9 @@ class Colors():
 	def genColorList(self):
 		section = settings.getValue('COLORS','selectSet',1)
                 if section is 0: self.colorList = settings.getValue('COLORS','default',3)
-		if section is 0: self.colorList = settings.getValue('COLORS','default',3)
+		if section is 1: self.colorList = settings.getValue('COLORS','user1',3)
+		if section is 2: self.colorList = settings.getValue('COLORS','user2',3)
+		if section is 3: self.colorList = settings.getValue('COLORS','user3',3)
 
 	def getColor(self):
 		if len(self.colorList) is 0: self.genColorList()
