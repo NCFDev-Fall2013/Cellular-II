@@ -20,7 +20,8 @@ class Colors():
 
 	def genColorList(self):
 		section = settings.getValue('COLORS','selectSet',1)
-		self.colorList = settings.getValue('COLORS',self.colorGroups(x),3)
+                if section is 0: self.colorList = settings.getValue('COLORS','default',3)
+		if section is 0: self.colorList = settings.getValue('COLORS','default',3)
 
 	def getColor(self):
 		if len(self.colorList) is 0: self.genColorList()
@@ -98,7 +99,7 @@ def mutateColor(rgbTuple = None):
 	rgbList	= list(rgbTuple)
 	fullMutate = settings.getValue('COLORS', 'allChange', 1)
 	changeMagnitude = settings.getValue('COLORS', 'magnitude', 1)
-	if changeMagnitude != 0
+	if changeMagnitude != 0:
 		for value in amount:
 			while value is 0: value = random.randint(-changeMagnitude,changeMagnitude)
 		amounts.append(value)
