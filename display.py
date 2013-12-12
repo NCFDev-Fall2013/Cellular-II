@@ -1,6 +1,5 @@
-
 #====Built-in Modules====#
-import sys, threading, random
+import sys, threading, random, math
 
 #====Required Modules====#
 from pygame.locals import *
@@ -24,6 +23,14 @@ redColor = pygame.Color(255,0,0)
 greenColor = pygame.Color(0,255,0)
 blueColor = pygame.Color(0,0,255)
 whiteColor = pygame.Color(255,255,255)
+blackColor = pygame.Color(0,0,0)
+
+#images
+play_pause_img = pygame.image.load('play_pause.bmp')
+submit_img = pygame.image.load('submit.bmp')
+add_cells_img = pygame.image.load('add_cells.bmp')
+add_food_img = pygame.image.load('add_food.bmp')
+reset_img = pygame.image.load('reset.bmp')
 
 # i'm pretty sure we don't need this
 #mousex, mousey = 0,0
@@ -38,22 +45,87 @@ pygame.init()
 #fpsClock = pygame.time.Clock()
 
 # set dimensions of display window
-display_width = 500
-display_height = 500
+world_width = 500
+world_height = 500
+display_width = int(1.5*world_width)
+display_height = world_height
 windowSurfaceObj = pygame.display.set_mode((display_width,display_height))
 
 #window title
 pygame.display.set_caption('Nautical Cell Force 2')
 
+#button class
+# the button name is also the name of the function it when clicked
+class Button():
+    button_xlocs = .36*world_width*3
+    button_radiuses = .05*display_height
+
+    def __init__(self,name,height,img):
+        self.name =name
+        self.xloc = Button.button_xlocs
+        self.yloc = height
+        self.image = img
+        self.radius = Button.button_radiuses
+
+        # button functions
+    def play_pause(self):
+        for i in xrange(100):
+            print "pause"
+    def submit(self):
+        for i in xrange(100):
+            print "submitting"
+    def add_cells(self):
+        for i in xrange(100):
+            print "add cell"
+    def reset(self):
+        for i in xrange(100):
+            print "reset"
+    def add_food(self):
+        for i in xrange(100):
+		print "add food"
+    def click(self):
+	    print "clicking", "self."+self.name+"()"
+	    eval('self.'+self.name+'()')
+	    #       print function
+	    #        eval(self.name+'()')
+	    #      eval(function)
+#button_locations
+#play-pause,settings, cell designer, state capture, mouseover/onclick cell stats, cell family tree, display tics per second, choose and customize three color presets
+
+# heights
+play_pause_button_height = .9*world_width*3
+submit_button_height = .7*display_height
+add_cells_button_height = .5*display_height
+add_food_button_height = .3*display_height
+reset_button_height = .1*display_height
+
+
+buttons = {}
+button_names = ["play_pause","submit","add_cells","add_food","reset"]
+for button_name in button_names:
+    buttons[button_name] = Button(button_name,eval(button_name+"_button_height"),eval(button_name+'_img'))
+
+def draw_buttons():
+#play_pause_button_xloc = 9*display_width
+#cell_designer_button_xloc = .7*display_width
+#state_capture_button_xloc = .5*display_width
+#family_tree_button_xloc = .3*display_width
+#custom_cell_button_xloc = .1*display_width
+
+    #        pygame.draw.circle(windowSurfaceObj, greenColor,(20, 600),9)
+    for button in buttons.values():
+#                pygame.draw.circle(windowSurfaceObj, greenColor,(int(button.xloc), int(button.height)), int(button.radius))
+        windowSurfaceObj.blit(button.image,(int(button.xloc), int(button.yloc)))
+#    pygame.display.flip()
 
 def convert_to_display_loc(pos):
         '''change our system of coordinates into coordinates that pygame can understand'''
         # pos contains a tuple of ( 0.0x, 0.0y)
-        return int(pos.x*display_width), int(pos.y*display_height)
+        return int(pos.x*world_width), int(pos.y*world_height)
 
 def convert_envi_loc(display_loc):
         ''' change pygame coordiantes to the format used by the rest of our program'''
-        return display_loc[0]/float(display_width),display_loc[1]/float(display_height)
+        return display_loc[0]/float(world_width),display_loc[1]/float(world_height)
 
 class Display(Thread):      
 	# self -> displayobject cell -> circle, radius -> radius, color
@@ -69,13 +141,13 @@ class Display(Thread):
 
 		# if cell is on the edge of the screen (split halfway?) then append to the list of parts of the cell to be displayed a part on the other half of the screen
 		if circle.pos.x < radius:
-			x_all.append(display_width + real_x)
+			x_all.append(world_width + real_x)
 		elif circle.pos.x > 1 - radius:
-			x_all.append(real_x - display_width)
+			x_all.append(real_x - world_width)
 		if circle.pos.y < radius:
-			y_all.append(display_height + real_y)
+			y_all.append(world_height + real_y)
 		elif circle.pos.y > 1 - radius:
-			y_all.append(real_y - display_height)
+			y_all.append(real_y - world_height)
 
 		# display all portions of the cell when it's split between two sides
 		for x in x_all:
@@ -110,12 +182,13 @@ class Display(Thread):
 		while True:
 			# make the background white
 			windowSurfaceObj.fill(whiteColor)
+			pygame.draw.rect(windowSurfaceObj, blackColor, (.35*3*world_width,0,10,display_height))
 
 			# World's food set is changing while the for loop runs, so we must lock it so that we do not iterate over a changing set
 			World.lock.acquire()
 			for food in World.food_set:
 				
-			# convert the food coordinates too coordinates that pygame can understand
+				# convert the food coordinates too coordinates that pygame can understand
 				x, y = convert_to_display_loc(food.pos)
 
 				# draw the food circles
@@ -139,13 +212,25 @@ class Display(Thread):
 					return ()
 				# add food or cell via left/right mouse click
 				elif event.type == MOUSEBUTTONDOWN:
+#					print "mouse button down"
 					if event.button == 1:
+#						print "got position"
 						pos = Position(convert_envi_loc(event.pos))
-						environment.add_food_at_location(pos)
+						for button in buttons:
+							if math.sqrt(((buttons[button].xloc-event.pos[0])**2)+((buttons[button].yloc-event.pos[1])**2)) < 30:
+#								print "button clicked"
+								buttons[button].click()
+							else:
+								if event.pos[0]<world_width and event.pos[1]<world_height:
+#									print "adding food at", event.pos
+									environment.add_food_at_location(pos)	
+						
 					elif event.button == 2:
+#						print "adding virus"
 						pos = Position(convert_envi_loc(event.pos))
 						environment.add_virus_at_location(pos)
 					elif event.button == 3:
+#						print "adding cell"
 						pos = Position(convert_envi_loc(event.pos))
 						environment.add_cell_at_location(pos)
 				
@@ -165,5 +250,6 @@ class Display(Thread):
 							pass
 
 			# update the screen
+			draw_buttons()
 			pygame.display.update()
-
+			

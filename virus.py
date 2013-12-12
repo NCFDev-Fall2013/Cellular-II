@@ -98,7 +98,7 @@ class Virus(Cell):
             #end_of_eX = environment.Environment().width - current_pos.x
             distanceTraveled = 0 #we haven't gone anywhere yet
             timeLeft = int(self.lifeSpan/3) #viruses choose three paths in their life
-            print "time left = ", timeLeft
+#            print "time left = ", timeLeft
             while timeLeft > 0: #we begin adding positions in the virus' trajectory
                 #nextPos_ref is the projected position based on a null reference frame
                 nextPos_ref = Point(ref_pos.x + self.driftSpeed,((ref_pos.x+self.driftSpeed)**self.curveTendency))
@@ -118,24 +118,24 @@ class Virus(Cell):
             #change direction possibly
             self.driftSpeed = self.maxSpeed * multi/abs(multi)
             #self.driftSpeed = random.uniform(-self.maxSpeed, self.maxSpeed)
-            print "curve = ", self.curveTendency
-            print "drift = ", self.driftSpeed
+#            print "curve = ", self.curveTendency
+#            print "drift = ", self.driftSpeed
             #these should ever be used, but just in case
             if self.curveTendency > 10:
                 self.curveTendency = 3
             elif self.curveTendency <= 0:
                 self.curveTendency = 1
         else: #we're moving!
-            print "moving now"
+#            print "moving now"
             ticksMax = len(self.moving_path) #how many steps are to be taken?
             #print "path = ", self.moving_path
-            print "length of path = ", ticksMax
-            print "ticks left = ",  self.ticksLeft
+#            print "length of path = ", ticksMax
+#            print "ticks left = ",  self.ticksLeft
 
             #change x and y
             self.pos.x = self.moving_path[self.ticksLeft].x
             self.pos.y = self.moving_path[self.ticksLeft].y
-            print "moving to ", self.pos
+#            print "moving to ", self.pos
 
             #remeber ticksLeft? Here it's used
             self.ticksLeft += 1
@@ -153,7 +153,7 @@ class Virus(Cell):
             
     #overwrite one_tick
     def one_tick(self):
-        print "virus be tickin"
+#        print "virus be tickin"
         self.move_like_virus()
         self.life_and_death()
 
