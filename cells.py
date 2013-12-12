@@ -1,63 +1,31 @@
-#====Built-in Modules====#
+#=======================Built-in Modules=======================#
 from functools import partial
 from operator import itemgetter, attrgetter
 import random, math, weakref
 
-#=====Custom Modules=====#
+#========================Custom Modules========================#
 import environment
 World = environment.World
 from vector import Vector, Point
-import globals
+from config import Settings
+settings = Settings()
 
-colors = globals.colorList()
+def call(a, f): return f(a)
 
-def call(a, f):
-	"""Richard's Black Magic - Called within __init__"""
-	return f(a)
-	
-def randExponent(curve,maximum):
-    x=random.randint(0,maximum*100.0)/100.0
-    base=(((maximum+curve)/curve))**(1.0/maximum)
-    y=curve*(base**x)-curve
-    return y
+class Colors():
+	def __init__(self):
+		self.colorGroups = ['default','user1','user2','user3']
+		self.colorList = []
+		self.genColorList()
 
-def startColor():
-	"""Gives parent cell initial color from text file"""
-	global colors
-	if len(colors) == 0: colors = globals.colorList()
-	pos = random.randint(0,(len(colors)-1))
-	return colors.pop(pos)
+	def genColorList(self):
+		section = settings.getValue('COLORS','selectSet',1)
+		self.colorList = settings.getValue('COLORS',self.colorGroups(x),3)
 
-def genRandomColor(rgbTuple):
-	"""creates a random color based on provided tuple"""
-	rgbList   = list(rgbTuple)
-	amount = [0,0,0]
-	amounts= []
-	color_change_magnitude = 1
-	for value in amount:
-		while value == 0: value = random.randint(-color_change_magnitude,color_change_magnitude)
-		amounts.append(value)
-
-	#decides whether or not each value changes
-	#0-2: single color change	(0-r,   1-g,   2-b)
-	#3-5: double color change	(3-rg,  4-rb,  5-gb)
-	#6-7: all or nothing		(6-rgb, 7-none)
-	mutate = random.randint(0,10)
-	
-	#changes single color
-	if   (mutate >= 0) and (mutate < 3): rgbList[mutate] += amounts[mutate]
-	elif (mutate == 8): rgbList[0] += amounts[0]
-	elif (mutate == 9): rgbList[1] += amounts[1]
-	elif (mutate ==10): rgbList[2] += amounts[2]
-	#changes two colors
-	elif (mutate >  2) and (mutate <  6):
-		if   (mutate == 3) or (mutate == 4): rgbList[0] += amounts[0]
-		elif (mutate == 3) or (mutate == 5): rgbList[1] += amounts[1]
-		elif (mutate == 4) or (mutate == 5): rgbList[2] += amounts[2]
-	
-	#makes sure color is valid
-	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
-	return tuple(rgbList)
+	def getColor(self):
+		if len(self.colorList) is 0: self.genColorList()
+		pos = random.randint(0,(len(colors)-1))
+		return colors.pop(pos)
 
 class AI(object):
 	"""AI for cell"""
@@ -92,13 +60,6 @@ class Dynamic(object):
 	def mutate_Dynamic(self):
 		self.run_force=mutate(self.run_force,0,100,.01)
 
-def mutate(value, lower, upper, maxincrement):
-        variation=random.uniform(-maxincrement,maxincrement)
-        if value+variation >=upper or value+variation<= lower:
-                return mutate(value,lower,upper,maxincrement)
-        else:
-                return value+variation
-
 class Phenotype(object):
 	def __init__(self, _AI=None, _Static=None, _Dynamic=None):
 		if not _AI:
@@ -119,6 +80,44 @@ class Phenotype(object):
 	def mutate_phenotype(self):
 		self.AI.mutate_AI()
 		self.Static.mutate_Static()
+		
+def mutate(value, lower, upper, maxincrement):
+        variation=random.uniform(-maxincrement,maxincrement)
+        if value+variation >=upper or value+variation<= lower:
+                return mutate(value,lower,upper,maxincrement)
+        else:
+                return value+variation
+		
+def mutateColor(rgbTuple = None):
+	"""creates a random color based on provided tuple"""
+	if rgbTuple is None:
+		x = [random.randomint(0,255) for x in range(3)]
+		return tuple(x)
+	amounts	= []
+	amount 	= [0,0,0]
+	rgbList	= list(rgbTuple)
+	fullMutate = settings.getValue('COLORS', 'allChange', 1)
+	changeMagnitude = settings.getValue('COLORS', 'magnitude', 1)
+	if changeMagnitude != 0
+		for value in amount:
+			while value is 0: value = random.randint(-changeMagnitude,changeMagnitude)
+		amounts.append(value)
+	'''
+	decides whether or not each value changes
+	#0-2: single color change - (0-r,   1-g,   2-b)
+	#3-5: double color change - (3-rg,  4-rb,  5-gb)
+	#6-8: single color change - (6-r,   7-g,   8-b)
+	#9-?: triple color change - (9-? - rgb)
+	'''
+	mutate = random.randint(0,8+fullMutate)
+	if   (mutate >= 0) and (mutate <= 2): rgbList[mutate]	+= amounts[mutate]
+	elif (mutate >= 6) and (mutate <= 8): rgbList[mutate-6] += amounts[mutate-6]
+	elif (mutate == 3) or  (mutate == 4): rgbList[0] += amounts[0]
+	elif (mutate == 3) or  (mutate == 5): rgbList[1] += amounts[1]
+	elif (mutate == 4) or  (mutate == 5): rgbList[2] += amounts[2]
+	elif (mutate >=9): rgbList = [rgbList[x]+amounts[x] for x in range (3)]
+	rgbList = [0 if value < 0 else 255 if value > 255 else value for value in rgbList]
+	return tuple(rgbList)
 
 # We need to create a default pheontype
 # This is because when cells are created they are given phenotype objects
@@ -134,6 +133,7 @@ class Phenotype(object):
 # so cells don't stay forever huge
 
 class Cell(object):
+	colors = Colors()
 	def __init__(self, x, y,  mass=0.3, energy=0.1, x_vel=0.0, y_vel=0.0, inherited_phenotype=Phenotype()):
 		"""Cells begin with a specified position, without velocity, task or destination."""
 		# Position, Velocity and Acceleration vectors:
@@ -156,9 +156,8 @@ class Cell(object):
 		self.walk_force		= self.phenotype.Static.walk_force
 		self.density		= self.phenotype.AI.density
 		self.mutation_chance	= self.phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
-		if self.phenotype.AI.color == None: self.color = startColor()
-		else: self.color = genRandomColor(Phenotype.AI.color)
-
+		if self.phenotype.AI.color == None: self.phenotype.AI.color = colors.genColor()
+		else: self.phenotype.AI.color = mutateColor(self.phenotype.AI.color)
 		# Required for motion:
 		self.energy		= energy
 		self.mass		= mass
@@ -337,3 +336,9 @@ class Cell(object):
                         self.keyList[randNT][randNO] = True
                         return True
                 return False #if this is reached, all guesses have failed
+                
+	def randExponent(curve,maximum):
+		x=random.randint(0,maximum*100.0)/100.0
+		base=(((maximum+curve)/curve))**(1.0/maximum)
+		y=curve*(base**x)-curve
+		return y
