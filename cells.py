@@ -100,10 +100,21 @@ def mutate(value, lower, upper, maxincrement):
                 return value+variation
 
 class Phenotype(object):
-	def __init__(self, AI=AI(), Static=Static(), Dynamic=Dynamic()):
-		self.AI=AI
-		self.Static=Static
-		self.Dynamic=Dynamic
+	def __init__(self, _AI=None, _Static=None, _Dynamic=None):
+		if not _AI:
+			self.AI=AI()
+		else:
+			self.AI= _AI
+
+		if not _Static:
+			self.Static=Static()
+		else:
+			self.Static=_Static
+
+		if not _Dynamic:
+			self.Dynamic=Dynamic()
+		else:
+			self.Dynamic= _Dynamic
 
 	def mutate_phenotype(self):
 		self.AI.mutate_AI()
