@@ -228,7 +228,7 @@ class Display(Thread):
 					elif event.button == 2:
 #						print "adding virus"
 						pos = Position(convert_envi_loc(event.pos))
-						environment.add_virus_at_location(pos)
+						environment.add_virus_at_location(1,pos)
 					elif event.button == 3:
 #						print "adding cell"
 						pos = Position(convert_envi_loc(event.pos))

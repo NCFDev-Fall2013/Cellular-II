@@ -87,13 +87,13 @@ class Virus(Cell):
     def move_like_virus(self):
         if not self.bool_moving: #if the cell isn't moving
             self.ticksLeft = 0 #then it's at the beginning - it's made 0 steps
-            print "Not movin', trying to move... "
+#            print "Not movin', trying to move... "
             self.bool_moving = True #get ready to moves
-            print "pos = ", self.pos
+#            print "pos = ", self.pos
             current_pos = self.pos #placeholder variable - bad habits from Java
             ref_pos = Point(0,0) #prepare a reference frame based on current location
             self.moving_path_as_string = "x^",self.curveTendency 
-            print "future path = ", self.moving_path_as_string
+#            print "future path = ", self.moving_path_as_string
             #end_of_eY = environment.Environment().height - current_pos.y 
             #end_of_eX = environment.Environment().width - current_pos.x
             distanceTraveled = 0 #we haven't gone anywhere yet
@@ -212,7 +212,7 @@ class InfectedCell(Cell):
             else:
                 self.mass -= self.timeToDie
                 if self.mass <= 0.1:
-                    environment.add_viruses_at_loc(self.dispersionCount,self.killer.pos)
+                    environment.add_virus_at_location(self.dispersionCount,self.killer.pos)
                     World.kill_cell(self)
                     passer = self.keyForChildren - (self.keyForChildren % 10)
                     self.killer.keyGen(passer)                          
