@@ -159,8 +159,8 @@ class Cell(object):
 		self.walk_force		= self.phenotype.Static.walk_force
 		self.density		= self.phenotype.AI.density
 		self.mutation_chance	= self.phenotype.AI.mutation_chance	# The likelihood of each phenotype mutating
-		if self.phenotype.AI.color == None: self.phenotype.AI.color = Cell.colors.genColor()
-		else: self.phenotype.AI.color = mutateColor(self.phenotype.AI.color)
+		if self.phenotype.AI.color == None: self.color = Cell.colors.genColor()
+		else: self.color = mutateColor(self.phenotype.AI.color)
 		# Required for motion:
 		self.energy		= energy
 		self.mass		= mass
