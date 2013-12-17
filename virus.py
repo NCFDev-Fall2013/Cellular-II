@@ -1,5 +1,7 @@
 from cells import Cell
-import unittest, environment, random, math, weakref, random, globals
+import unittest, environment, random, math, weakref, random, 
+# I'm going to comment this out from now because it looks like we didn't finish implementing globals
+#import globals
 from vector import Vector, Point
 from functools import partial
 from operator import itemgetter, attrgetter
