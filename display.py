@@ -88,8 +88,6 @@ class Button():
         environment.add_food(1)
 	print "add food"
     def click(self):
-	    print "clicking", "self."+self.name+"()"
-	    print self.name
 	    eval('self.'+self.name+'()')
 	    #        eval(self.name+'()')
 	    #      eval(function)
