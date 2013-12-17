@@ -66,7 +66,7 @@ class Vector(object):
 		x = self.x
 		y = self.y
                 """Magnitude of the vector."""
-		print x, y
+#		print x, y
 		try:
 			return sqrt(x**2 + y**2)
 		except OverflowError:

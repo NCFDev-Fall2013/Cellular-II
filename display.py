@@ -27,7 +27,7 @@ blackColor = pygame.Color(0,0,0)
 
 #images
 play_pause_img = pygame.image.load('play_pause.bmp')
-submit_img = pygame.image.load('submit.bmp')
+add_viruses_img = pygame.image.load('add_viruses.bmp')
 add_cells_img = pygame.image.load('add_cells.bmp')
 add_food_img = pygame.image.load('add_food.bmp')
 reset_img = pygame.image.load('reset.bmp')
@@ -71,31 +71,26 @@ class Button():
     def play_pause(self):
         if Display.running_bool == True: Display.running_bool = False
         else: Display.running_bool = True
-        for i in xrange(100):
-            print "pause"
-    def submit(self):
+	print "pause"
+    def add_viruses(self):
         environment.add_viruses(1)
-        for i in xrange(100):
-            print "submitting"
+	print "submit to the viruses!"
     def add_cells(self):
         environment.add_cells(1)
-        for i in xrange(100):
-            print "add cell"
+	print "add cell"
             
     def reset(self):
         dupe = World.cell_list[:]
         for cell in dupe:
                 World.remove_cell(cell)
-        for i in xrange(100):
-            print "reset"
+	print "reset"
     def add_food(self):
         environment.add_food(1)
-        for i in xrange(100):
-		print "add food"
+	print "add food"
     def click(self):
 	    print "clicking", "self."+self.name+"()"
+	    print self.name
 	    eval('self.'+self.name+'()')
-	    #       print function
 	    #        eval(self.name+'()')
 	    #      eval(function)
 #button_locations
@@ -103,14 +98,14 @@ class Button():
 
 # heights
 play_pause_button_height = .9*world_width*3
-submit_button_height = .7*display_height
+add_viruses_button_height = .7*display_height
 add_cells_button_height = .5*display_height
 add_food_button_height = .3*display_height
 reset_button_height = .1*display_height
 
 
 buttons = {}
-button_names = ["play_pause","submit","add_cells","add_food","reset"]
+button_names = ["play_pause","add_viruses","add_cells","add_food","reset"]
 for button_name in button_names:
     buttons[button_name] = Button(button_name,eval(button_name+"_button_height"),eval(button_name+'_img'))
 
