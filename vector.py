@@ -1,6 +1,5 @@
 #====Built-in Modules====#
 from math import sqrt, fabs, fmod
-from numpy import absolute
 
 def distance(x1, y1, x2, y2):
         """Calculates and returns the distance""" 
@@ -48,48 +47,48 @@ class Vector(object):
                         return Vector(self.x*other, self.y*other)
         def __div__(self, other):
                 """Division of vectors."""
-		try:
-			if type(other) == type(self):
-				return Vector(self.x/other.x, self.y/other.y)
-			elif type(other) == int or type(other) == float:
-				return Vector(self.x/other, self.y/other)
-		except:
-			if type(other) == type(self):
-				return Vector(self.x/other.x+.01, self.y/other.y+.01)
-			elif type(other) == int or type(other) == float:
-				return Vector(self.x/other+.01, self.y/other+.01)
+                try:
+                        if type(other) == type(self):
+                                return Vector(self.x/other.x, self.y/other.y)
+                        elif type(other) == int or type(other) == float:
+                                return Vector(self.x/other, self.y/other)
+                except:
+                        if type(other) == type(self):
+                                return Vector(self.x/other.x+.01, self.y/other.y+.01)
+                        elif type(other) == int or type(other) == float:
+                                return Vector(self.x/other+.01, self.y/other+.01)
 
         def __neg__(self):
                 """Makes the vector negative."""
                 return Vector(-self.x, -self.y)
         def __abs__(self):
-		x = self.x
-		y = self.y
+                x = self.x
+                y = self.y
                 """Magnitude of the vector."""
-#		print x, y
-		try:
-			return sqrt(x**2 + y**2)
-		except OverflowError:
-			try:
-				x = round(x,1)**2
-			except:
-				if x <.000001:
- 				 	x = .000001
-				elif x>10000000:
-					x = 100000
-				else:
-					x = .1
-			try:
-				y = round(y,1)**2
-			except:
-				if x <.000001:
-				 	x = .000001
-				elif x>10000000:
-					x = 100000
-				else:
-					y = .2
-			return sqrt(y+x)
-			
+#               print x, y
+                try:
+                        return sqrt(x**2 + y**2)
+                except OverflowError:
+                        try:
+                                x = round(x,1)**2
+                        except:
+                                if x <.000001:
+                                        x = .000001
+                                elif x>10000000:
+                                        x = 100000
+                                else:
+                                        x = .1
+                        try:
+                                y = round(y,1)**2
+                        except:
+                                if x <.000001:
+                                        x = .000001
+                                elif x>10000000:
+                                        x = 100000
+                                else:
+                                        y = .2
+                        return sqrt(y+x)
+                        
         def __repr__(self):
                 """Presents the representation of the vector."""
                 return '(' + str(self.x) + ',' + str(self.y) + ')'
@@ -107,7 +106,7 @@ class Point(Vector):
         def __init__(self, x, y):
                 """Instantiates the two values for the vector."""
                 super(Point, self).__init__(x, y)
-		self.fit_to_torus()
+                self.fit_to_torus()
         def __iadd__(self, other):
                 """Increases the point vector"""
                 super(Point, self).__iadd__(other)

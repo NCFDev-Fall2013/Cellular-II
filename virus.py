@@ -1,11 +1,15 @@
-from cells import Cell
-import unittest, environment, random, math, weakref, random
-# I'm going to comment this out from now because it looks like we didn't finish implementing globals
-#import globals
-from vector import Vector, Point
+#====Built-in Modules====#
+import math, weakref, random
 from functools import partial
 from operator import itemgetter, attrgetter
+
+#=====Custom Modules=====#
+import environment
+from cells import Cell
 World = environment.World
+from vector import Vector, Point
+
+
 #Virus is a subclass of Cell
 class Virus(Cell):
     
@@ -217,7 +221,4 @@ class InfectedCell(Cell):
                     environment.add_virus_at_location(self.dispersionCount,self.killer.pos)
                     World.kill_cell(self)
                     passer = self.keyForChildren - (self.keyForChildren % 10)
-                    self.killer.keyGen(passer)                          
-        
-            
-    
+                    self.killer.keyGen(passer)
