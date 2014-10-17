@@ -30,7 +30,7 @@ Cells-
 	Cells are the main actors in the environment. They wander aimlessly for a time, but when a piece of food enters their sight, they pursue it singlemindedly. As they eat, they grow, and as they grow, they move more slowly. Once a cell has reached a certain threshold of energy, they are able to divide into two smaller cells. When dividing, there is a chance of mutation, which will change the default characteristics of the cells. Cells also collide with one another. 
 
 Viruses-
-	Viruses are beings of wanton cellular destruction. They float through the environment mindlessly, and when wehn they collide with a cell, the cell is infected, dies, and then releases more viruses into the environment. 
+	Viruses are beings of wanton cellular destruction. They float through the environment mindlessly, and when they collide with a cell, the cell is infected, dies, and then releases more viruses into the environment. 
 	(Note - when many viruses appear in the environment at one time, the program tends to run slowly)
 
 
