@@ -1,4 +1,5 @@
 #=======================Built-in Modules=======================#
+import numpy
 from functools import partial
 from operator import itemgetter, attrgetter
 import random, math, weakref
@@ -226,6 +227,11 @@ class Cell(object):
 		"""Updates the cell's position, velocity and acceleration in that order."""
 		prev_vel = Vector(self.vel.x, self.vel.y)
 		self.pos += self.vel
+		if numpy.isnan(self.pos.x):
+			self.pos.x = random.uniform(0,World.width)
+		if numpy.isnan(self.pos.y):
+			self.pos.y = random.uniform(0,World.width)
+			
 		self.vel += self.acl
 		self.acl = self.exerted_force - self.vel*abs(self.vel)*World.resistance*(self.radius)/self.mass
 		self.exerted_force = Vector(0.0,0.0)

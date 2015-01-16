@@ -1,5 +1,6 @@
 #====Built-in Modules====#
 from math import sqrt, fabs, fmod
+import random
 
 def distance(x1, y1, x2, y2):
         """Calculates and returns the distance""" 
@@ -73,7 +74,7 @@ class Vector(object):
                                 x = round(x,1)**2
                         except:
                                 if x <.000001:
-                                        x = .000001
+                                        x = random.uniform(0,.001)
                                 elif x>10000000:
                                         x = 100000
                                 else:
@@ -81,10 +82,10 @@ class Vector(object):
                         try:
                                 y = round(y,1)**2
                         except:
-                                if x <.000001:
-                                        x = .000001
-                                elif x>10000000:
-                                        x = 100000
+                                if y <.000001:
+                                        y = random.uniform(0,.001)
+                                elif y>10000000:
+                                        y = 100000
                                 else:
                                         y = .2
                         return sqrt(y+x)
